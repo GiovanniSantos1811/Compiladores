@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "hash.h"
+#include "arquivo.h"
 
 
 // int main() {
@@ -18,27 +19,12 @@
 // }
 
 int main() {
-    FILE *programa;
-    char linha[256];
+    const char *nome_programa = "fatorialsemprocedimento.txt";
+    const char *nome_saida = "output.txt";
+    remove(nome_saida);
 
-    programa = fopen("fatorialsemprocedimento.txt", "r");
-
-    if (programa == NULL) {
-        perror("Erro ao abrir o arquivo");
-        return -1;
-    }
-
-    while (fgets(linha, sizeof(linha), programa)) {
-        printf("%s", linha);
-
-        // if (reconhecer(linha)) {
-        //     printf("Linha pertence a linguagem.\n");
-        // } else {
-        //     printf("Linha nao pertence a linguagem.\n");
-        // }
-    }
-
-    fclose(programa);
+    ler_arquivo_caractere(nome_programa);
+    escrever_arquivo(nome_saida, "testando");
 
     return 0;
 }
