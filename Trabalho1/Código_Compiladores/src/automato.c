@@ -152,39 +152,47 @@ char simbolos[TAM_VETOR_CARACTERES] = {
     // Digitos (10 dígitos)
     '0','1','2','3','4','5','6','7','8','9',
     
-    // Sumbolos especiais
+    // Sumbolos especiais (Inicia no ID 62)
     ':', '=', '+', '-', '<', '>', ';', ',', 
     '(', ')', '{', '}', '\'', '\t', '\n', '.'
 };
 
+int atribuicao_ID_equivalente(int ID) {
+    // Atribuição do ID equivalente na tabela de transição (transformar caractere em numero VÁLIDO da coluna)
+    if(ID >= 0 && ID < 52) { // Significa que é uma letra do alfabeto, seja maiúscula ou minúscula
+        return 0; // Recebe o ID 0, pois a tabela de transição tem a coluna 0 como LETRAS
+    }
+    else if(ID >= 0 && ID < 62) { // Significa que é um dígito
+        return 1; // Recebe ID 1, equivalente a coluna 1 da tabela de transições
+    }
+    else if(ID >= 62) { //Significa que é um símbolo
+        return ID - 60; // O símbolo começa no ID 2, por isso subtraímos 60.
+    }
+    return ID; 
+}
+
 // Função para encontrar o ID do vetor com relação aos caracteres do vetor
 int encontrarID(char c) {
+    int ID;
     for(int i = 0; i < TAM_VETOR_CARACTERES; i++) {
         if(simbolos[i] == c) {
-            return i; // Retorna o índice do caractere encontrado
+            ID = atribuicao_ID_equivalente(i); // Retorna o índice do caractere encontrado
+            return ID; 
         }
     }
-    return -1; // Caractere não encontrado
+    ID = atribuicao_ID_equivalente(-1); // Caractere não encontrado
+    return ID; 
 }
 
 
+// Função de transição de estado
 int transicao(char caractere, int estado_atual){
     int coluna_char;
-    estado_atual = 0;
     // ADD: LEITURA DO CARACTERE
     
     coluna_char = encontrarID(caractere);
 
-    // Atribuição do ID equivalente na tabela de transição (transformar caractere em numero VÁLIDO da coluna)
-    if(coluna_char >= 0 && coluna_char < 52) { // Significa que é uma letra do alfabeto, seja maiúscula ou minúscula
-        coluna_char = 0; // Recebe o ID 0, pois a tabela de transição tem a coluna 0 como LETRAS
-    }
-    else if(coluna_char >= 0 && coluna_char < 62) { // Significa que é um dígito
-        coluna_char = 1; // Recebe ID 1, equivalente a coluna 1 da tabela de transições
-    }
-    else if(coluna_char >= 62) { //Significa que é um símbolo
-        coluna_char -= 60; 
-    }
-    // ADD: TRATAMENTO PARA A LINHA 24 DA MATRIZ (ESTADO 24), ocorre quando coluna_char = -1
-    return matriz_transicao[estado_atual][coluna_char];
+   printf("Coluna: %d\n", coluna_char);
+    //return matriz_transicao[estado_atual][coluna_char];
+    return 1;
 }
