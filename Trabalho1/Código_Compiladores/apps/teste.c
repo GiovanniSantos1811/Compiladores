@@ -18,6 +18,7 @@
 //     return 0;
 // }
 
+/*
 int main() {
     const char *nome_programa = "fatorialsemprocedimento.txt";
     const char *nome_saida = "output.txt";
@@ -49,3 +50,12 @@ int main() {
     fclose(programa);
     return 0;
 }
+*/
+
+int main() {
+    
+    int c = transicao('@', 10); 
+
+    return 0; 
+}
+
