@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include "automato.h"
 
-int matriz_transicao[NUM_ESTADOS][NUM_SIMBOLOS] = { // PRECISA INCLUIR COLUNA DE .
+int matriz_transicao[NUM_ESTADOS][NUM_SIMBOLOS+2] = { // PRECISA INCLUIR COLUNA DE .
     // Estado 0
     {4, 1, 6, 10, 8, 9, 11, 15, 18, 19, 21, 20, 22, 24, 0, 0, 0},
     
@@ -140,8 +140,27 @@ int matriz_transicao[NUM_ESTADOS][NUM_SIMBOLOS] = { // PRECISA INCLUIR COLUNA DE
      ERRO_ATRIB_MAL_FORMADO, ERRO_ATRIB_MAL_FORMADO}
 };
 
+char simbolos[NUM_SIMBOLOS+52+10] = {
+    // Letras minusculas
+    'a','b','c','d','e','f','g','h','i','j','k','l','m',
+    'n','o','p','q','r','s','t','u','v','w','x','y','z',
+    
+    // Letras maiusculas
+    'A','B','C','D','E','F','G','H','I','J','K','L','M',
+    'N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+    
+    // Digitos
+    '0','1','2','3','4','5','6','7','8','9',
+    
+    // Sumbolos especiais
+    ':', '=', '+', '-', '<', '>', ';', ',', 
+    '(', ')', '{', '}', '\'', '\t', '\n', '.'
+};
+
+
 int transicao(char char_prox, int estado_atual){
     int coluna_char;
-    
+
+    // ADD: transformar caractere em numero da coluna
     return matriz_transicao[estado_atual][coluna_char];
 }

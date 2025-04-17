@@ -23,9 +23,6 @@ int main() {
     const char *nome_saida = "output.txt";
     remove(nome_saida);
 
-    // ler_arquivo_caractere(nome_programa);
-    // escrever_arquivo(nome_saida, "testando");
-
     FILE *programa = fopen(nome_programa, "r");
     if (programa == NULL) {
         perror("Erro ao abrir o arquivo");
@@ -40,10 +37,12 @@ int main() {
         printf("prox caractere: %c\n", char_prox);
         estado_atual = transicao(char_prox, estado_atual);
         if(estado_atual < 0){
-
+            // ADD: tratamento de estados finais (mensagens)
+            escrever_arquivo(nome_saida, token_atual, token_class);
+            estado_atual = 0;
         } else {
-            // coloca o char_prox no final do token_atual
-
+            // ADD: coloca o char_prox no final do token_atual
+            char_prox = fgetc(programa);
         }
     }
     

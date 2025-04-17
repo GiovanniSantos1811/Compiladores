@@ -2,7 +2,7 @@
 #define AUTOMATO_H
 
 #define NUM_ESTADOS 26
-#define NUM_SIMBOLOS 18 //52 letras, 10 digitos, 16 simbolos (:	 =	 +	-	<	>	;	,	(	)	{	}	'	\t	\n .)
+#define NUM_SIMBOLOS 16 //16 simbolos (:	 =	 +	-	<	>	;	,	(	)	{	}	'	\t	\n .)
 
 #define ERRO_NUMERO_MAL_FORMADO -1
 #define TK_NUM_INT -2
