@@ -4,7 +4,7 @@
 // Constantes
 #define NUM_ESTADOS 26
 #define NUM_SIMBOLOS 16 //16 simbolos (:	 =	 +	-	<	>	;	,	(	)	{	}	'	\t	\n .)
-#define TAM_VETOR_CARACTERES 78 // 52 (a-zA-Z) letras + 10 dígitos + NUM_SIMBOLOS
+#define TAM_VETOR_CARACTERES 79 // 52 (a-zA-Z) letras + 10 dígitos + NUM_SIMBOLOS
 
 #define ERRO_NUMERO_MAL_FORMADO -1
 #define TK_NUM_INT -2
@@ -25,6 +25,7 @@
 #define COMENTARIO -16
 #define ERRO_IDENT_MAL_FORMADO -17
 #define ERRO_ATRIB_MAL_FORMADO -18
+#define SIMBOLO_NAO_IDENTIFICADO -19
 
 // Matrizes e vetores
 int matriz_transicao[NUM_ESTADOS][NUM_SIMBOLOS+2];

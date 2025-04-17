@@ -1,4 +1,4 @@
-VAR n, fat;
+VAR, n, fat;
 BEGIN
     n:=4;
     fat:=1;
@@ -8,3 +8,5 @@ BEGIN
         n:=n-1;
         END
 END.
+
+
