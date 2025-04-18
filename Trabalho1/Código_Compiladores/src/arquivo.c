@@ -16,15 +16,9 @@
 //     fclose(arquivo);
 // }
 
-void escrever_arquivo(const char *nome_arquivo, const char *conteudoToken, const char *conteudoClass) {
-    FILE *arquivo = fopen(nome_arquivo, "w"); 
-    if (arquivo == NULL) {
-        perror("Erro ao abrir o arquivo");
-        return;
-    }
-
+void escrever_arquivo(FILE *arquivo, char *conteudoToken, char *conteudoClass) {
     fputs(conteudoToken, arquivo);
     fputs(", ", arquivo);
     fputs(conteudoClass, arquivo);
-    fclose(arquivo);
+    fputs("\n", arquivo);
 }

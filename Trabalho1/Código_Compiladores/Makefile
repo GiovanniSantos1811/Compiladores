@@ -16,3 +16,8 @@ run:
 
 clean: 
 	rm $(BIN)/* $(OBJ)/* 
+
+w:
+	cls
+	make all
+	make run

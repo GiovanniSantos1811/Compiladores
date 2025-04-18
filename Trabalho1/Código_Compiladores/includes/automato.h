@@ -3,8 +3,8 @@
 
 // Constantes
 #define NUM_ESTADOS 26
-#define NUM_SIMBOLOS 16 //16 simbolos (:	 =	 +	-	<	>	;	,	(	)	{	}	'	\t	\n .)
-#define TAM_VETOR_CARACTERES 79 // 52 (a-zA-Z) letras + 10 dígitos + NUM_SIMBOLOS
+#define NUM_SIMBOLOS 16 //17 simbolos (:	 =	 +	-	<	>	;	,	(	)	{	}	'	\t	\n espaço)
+#define TAM_VETOR_CARACTERES 78 // 52 (a-zA-Z) letras + 10 dígitos + NUM_SIMBOLOS
 
 #define ERRO_NUMERO_MAL_FORMADO -1
 #define TK_NUM_INT -2

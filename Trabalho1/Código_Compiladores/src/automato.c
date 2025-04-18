@@ -141,6 +141,8 @@ int matriz_transicao[NUM_ESTADOS][NUM_SIMBOLOS+2] = { // +2 para considerar uma 
 };
 
 char simbolos[TAM_VETOR_CARACTERES] = { 
+    // ADD: .
+
     // Letras minusculas (26 letras)
     'a','b','c','d','e','f','g','h','i','j','k','l','m',
     'n','o','p','q','r','s','t','u','v','w','x','y','z',
@@ -162,13 +164,13 @@ int atribuicao_ID_equivalente(int ID) {
     if(ID >= 0 && ID < 52) { // Significa que é uma letra do alfabeto, seja maiúscula ou minúscula
         return 0; // Recebe o ID 0, pois a tabela de transição tem a coluna 0 como LETRAS
     }
-    else if(ID >= 0 && ID < 62) { // Significa que é um dígito
+    else if(ID >= 52 && ID < 62) { // Significa que é um dígito
         return 1; // Recebe ID 1, equivalente a coluna 1 da tabela de transições
     }
     else if(ID >= 62) { //Significa que é um símbolo
         return ID - 60; // O símbolo começa no ID 2, por isso subtraímos 60.
     }
-    return ID; 
+    return ID;
 }
 
 // Função para encontrar o ID do vetor com relação aos caracteres do vetor
@@ -180,23 +182,24 @@ int encontrarID(char c) {
             return ID; 
         }
     }
-    ID = atribuicao_ID_equivalente(-1); // Caractere não encontrado
-    return ID; 
+    // ID = atribuicao_ID_equivalente(-19); // Caractere não encontrado
+    // return ID; 
+    return -19; // Caractere não encontrado
 }
 
 
 // Função de transição de estado
 int transicao(char caractere, int estado_atual){
-    int coluna_char;
-    // ADD: LEITURA DO CARACTERE
-    
-    coluna_char = encontrarID(caractere);
+    int id_char = encontrarID(caractere);
 
-    //printf("Coluna: %d\n", coluna_char);
-    //printf("estado: %d\n", matriz_transicao[estado_atual][coluna_char]);
-    int aux = matriz_transicao[estado_atual][coluna_char]; //Determinando o estado atingido após a transição
+    //printf("Coluna: %d\n", id_char);
+    //printf("estado: %d\n", matriz_transicao[estado_atual][id_char]);
+
+    int aux = matriz_transicao[estado_atual][id_char]; //Determinando o estado atingido após a transição
     if (matriz_transicao[aux][0] < 0) //Já chegamos em um estado final
         return matriz_transicao[aux][0];
 
     return aux;
+
+    // return matriz_transicao[estado_atual][id_char]; //Determinando o estado atingido após a transição
 }
