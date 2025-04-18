@@ -40,17 +40,25 @@ int main() {
             char_lido = fgetc(programa);
         }
         else { //Estado final
+            //Finalizando de montar o token
             if (cont > 0){ //Adicionando o caracter terminador nos tokens de palavras
                 token_atual[cont] = '\0';
+
+                //PRECISA VERIFICAR NA TABELA HASH SE É PALAVRA RESERVADA OU NÃO
             }
             else{ //Armazenando vírgulas, pontos, etc. (não tem estado intermediário, vai direto do inicial pro final)
                 token_atual[0] = char_lido;
                 token_atual[1] = '\0';
-                char_lido = fgetc(programa);
+                char_lido = fgetc(programa); //Garantindo que não fique fazendo transição com caractere repetido
+
+                //SÓ VERIFICAR A QUAL CLASSE PERTENCE ANTES DE ESCREVER NO ARQUIVO (DÁ PRA MONTAR UM VETOR DE CORRESPONDÊNCIA COM OS DEFINES LÁ PRA VERIFICAR ISSO)
             }
-            //escrever_arquivo(output, token_atual, classe);
-            printf("\nESCRITO:|%s|\n\n", token_atual);
             
+            //Escrevendo no arquivo de saída
+            escrever_arquivo(output, token_atual, classe);
+            //printf("\nESCRITO:|%s|\n\n", token_atual);
+            
+            //Resetando as partes auxiliares para a próxima vez
             cont = 0;
             estado_atual = 0;
             free(token_atual);
