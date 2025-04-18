@@ -213,6 +213,12 @@ int transicao(char caractere, int estado_atual){
     
     coluna_char = encontrarID(caractere);
 
+    // Vamos testar o id_char para verificar que o caractere existe no alfabeto do analisador léxico
+    if(coluna_char < 0) {
+        // Significa que o caractere não foi encontrado, então é estado 24 (erro genérico)
+        return matriz_transicao[24][0]; // Coluna é indiferente
+    }
+    
     //printf("Coluna: %d\n", coluna_char);
     //printf("estado: %d\n", matriz_transicao[estado_atual][coluna_char]);
     int aux = matriz_transicao[estado_atual][coluna_char]; //Determinando o estado atingido após a transição
