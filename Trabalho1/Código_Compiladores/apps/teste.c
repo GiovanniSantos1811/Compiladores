@@ -35,7 +35,7 @@ int main() {
         if (estado_atual == 0){
             char_lido = fgetc(programa);
         }
-        else if (estado_atual >= 0 && estado_atual != 5 && estado_atual != 3) { // AJUSTAR
+        else if (estado_atual >= 0 && estado_atual != 5 && estado_atual != 3 && estado_atual != 16 && estado_atual != 12) { // AJUSTAR
         // else if (estado_atual >= 0) {
             token_atual[cont++] = char_lido;
             char_lido = fgetc(programa);
