@@ -195,11 +195,11 @@ int transicao(char caractere, int estado_atual){
     //printf("Coluna: %d\n", id_char);
     //printf("estado: %d\n", matriz_transicao[estado_atual][id_char]);
 
-    int aux = matriz_transicao[estado_atual][id_char]; //Determinando o estado atingido após a transição
-    if (matriz_transicao[aux][0] < 0) //Já chegamos em um estado final
-        return matriz_transicao[aux][0];
+    // int aux = matriz_transicao[estado_atual][id_char]; //Determinando o estado atingido após a transição
+    // if (matriz_transicao[aux][0] < 0) //Já chegamos em um estado final
+    //     return matriz_transicao[aux][0];
 
-    return aux;
+    // return aux;
 
-    // return matriz_transicao[estado_atual][id_char]; //Determinando o estado atingido após a transição
+    return matriz_transicao[estado_atual][id_char]; //Determinando o estado atingido após a transição
 }
