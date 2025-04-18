@@ -69,7 +69,7 @@ int main() {
 
 int main() {
     
-    int a = transicao('.', 4);
+    int a = transicao('}', 22);
     printf("Estado atual: %d\n", a);
 
     return 0; 

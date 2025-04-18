@@ -204,7 +204,7 @@ int encontrarID(char c) {
     }
     // ID = atribuicao_ID_equivalente(-19); // Caractere não encontrado
     // return ID; 
-    return SIMB_NAO_IDENTIFICADO; // Caractere não encontrado
+    return -1; // Caractere não encontrado
 }
 
 
@@ -213,6 +213,12 @@ int transicao(char caractere, int estado_atual){
 
     int id_char = encontrarID(caractere);
     int proximo_estado, valor_estado_final; 
+
+    // Vamos testar o id_char para verificar que o caractere existe no alfabeto do analisador léxico
+    if(id_char < 0) {
+        // Significa que o caractere não foi encontrado, então é estado 24 (erro genérico)
+        return matriz_transicao[24][0]; // Coluna é indiferente
+    }
 
     // Testar se o próximo estado é estado final
     int indice_estado_final = busca_binaria(estados_finais, QTD_ESTADOS_FINAIS, matriz_transicao[estado_atual][id_char]);
