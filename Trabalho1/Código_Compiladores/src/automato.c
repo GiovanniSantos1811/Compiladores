@@ -210,25 +210,16 @@ int encontrarID(char c) {
 
 // Função de transição de estado
 int transicao(char caractere, int estado_atual){
+    int coluna_char;
+    // ADD: LEITURA DO CARACTERE
+    
+    coluna_char = encontrarID(caractere);
 
-    int id_char = encontrarID(caractere);
-    int proximo_estado, valor_estado_final; 
+    //printf("Coluna: %d\n", coluna_char);
+    //printf("estado: %d\n", matriz_transicao[estado_atual][coluna_char]);
+    int aux = matriz_transicao[estado_atual][coluna_char]; //Determinando o estado atingido após a transição
+    if (matriz_transicao[aux][0] < 0) //Já chegamos em um estado final
+        return matriz_transicao[aux][0];
 
-    // Vamos testar o id_char para verificar que o caractere existe no alfabeto do analisador léxico
-    if(id_char < 0) {
-        // Significa que o caractere não foi encontrado, então é estado 24 (erro genérico)
-        return matriz_transicao[24][0]; // Coluna é indiferente
-    }
-
-    // Testar se o próximo estado é estado final
-    int indice_estado_final = busca_binaria(estados_finais, QTD_ESTADOS_FINAIS, matriz_transicao[estado_atual][id_char]);
-    if(indice_estado_final >= 0) {
-        // Significa que o próximo estado é um estado final
-        valor_estado_final = estados_finais[indice_estado_final];
-        return matriz_transicao[valor_estado_final][0]; // A coluna não faz diferença se é estado final
-    }
-
-    // Se não for estado final, retorna o pŕoximo estado a ser ido
-    return matriz_transicao[estado_atual][id_char]; //Determinando o estado atingido após a transição
+    return aux;
 }
-
