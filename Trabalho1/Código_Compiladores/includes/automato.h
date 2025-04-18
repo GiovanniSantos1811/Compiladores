@@ -2,8 +2,8 @@
 #define AUTOMATO_H
 
 // Constantes
-#define NUM_ESTADOS 26
-#define NUM_SIMBOLOS 17 //17 simbolos (:	 =	 +	-	<	>	;	,	(	)	{	}	'	\t	\n espaço .)
+#define NUM_ESTADOS 27
+#define NUM_SIMBOLOS 18 //18 simbolos (:	 =	 +	-	<	>	;	,	(	)	{	}	'	\t	\n espaço . EOF)
 #define TAM_VETOR_CARACTERES 62+NUM_SIMBOLOS // 52 (a-zA-Z) letras + 10 dígitos + NUM_SIMBOLOS
 
 #define ERRO_NUMERO_MAL_FORMADO -1

@@ -51,9 +51,10 @@ int main() {
         }
     }
 
-    if (estado_atual == 26){ // AJUSTAR
+    if (transicao(char_lido, estado_atual) < 0){
         token_atual[cont] = '\0';
         escrever_arquivo(output, token_atual, classe);
+        printf("\nESCRITO:|%s|\n\n", token_atual);
     } else {
         printf("Erro de Finalização do Programa.\n");
     }
