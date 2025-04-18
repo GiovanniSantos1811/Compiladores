@@ -1,6 +1,5 @@
-#include<stdio.h>
+#include <stdio.h>
 #include "automato.h"
-#include "busca.h"
 
 int matriz_transicao[NUM_ESTADOS][NUM_SIMBOLOS+2] = { // +2 para considerar uma coluna para Letras e uma para Dígitos
     // Estado 0
@@ -211,7 +210,6 @@ int encontrarID(char c) {
 // Função de transição de estado
 int transicao(char caractere, int estado_atual){
     int coluna_char;
-    // ADD: LEITURA DO CARACTERE
     
     coluna_char = encontrarID(caractere);
 
