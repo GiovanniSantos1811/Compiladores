@@ -14,8 +14,7 @@ fat, TESTE
 ;, TESTE
 WHILE, TESTE
 n, TESTE
->=, TESTE
-1, TESTE
+>1, TESTE
 DO, TESTE
 BEGIN, TESTE
 fat, TESTE
@@ -30,4 +29,6 @@ n, TESTE
 1, TESTE
 ;, TESTE
 END, TESTE
+{teste comentario}, TESTE
 END, TESTE
+., TESTE
