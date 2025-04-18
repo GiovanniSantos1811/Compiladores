@@ -3,7 +3,9 @@
 #include "hash.h"
 #include "arquivo.h"
 #include "automato.h"
+#include "busca.h"
 
+/*
 int main() {
     const char *nome_programa = "fatorialsemprocedimento.txt";
     const char *nome_output = "output.txt";
@@ -62,4 +64,13 @@ int main() {
     fclose(output);
     fclose(programa);
     return 0;
+}
+*/
+
+int main() {
+    
+    int a = transicao('.', 4);
+    printf("Estado atual: %d\n", a);
+
+    return 0; 
 }

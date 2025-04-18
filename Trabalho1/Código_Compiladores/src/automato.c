@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include "automato.h"
+#include "busca.h"
 
 int matriz_transicao[NUM_ESTADOS][NUM_SIMBOLOS+2] = { // +2 para considerar uma coluna para Letras e uma para Dígitos
     // Estado 0
@@ -174,6 +175,10 @@ char simbolos[TAM_VETOR_CARACTERES] = {
     '(', ')', '{', '}', '\'', '\t', '\n', ' ', '.', EOF
 };
 
+// Vetor com os estados finais, inseridos em ordem crescente (facilita a busca)
+int estados_finais[QTD_ESTADOS_FINAIS] = {2, 3, 5, 7, 8, 9, 10, 12, 13, 14, 16, 17, 18, 19, 
+20, 21, 23, 24, 25, 26};
+
 int atribuicao_ID_equivalente(int ID) {
     // Atribuição do ID equivalente na tabela de transição (transformar caractere em numero VÁLIDO da coluna)
     if(ID >= 0 && ID < 52) { // Significa que é uma letra do alfabeto, seja maiúscula ou minúscula
@@ -205,16 +210,19 @@ int encontrarID(char c) {
 
 // Função de transição de estado
 int transicao(char caractere, int estado_atual){
+
     int id_char = encontrarID(caractere);
+    int proximo_estado, valor_estado_final; 
 
-    //printf("Coluna: %d\n", id_char);
-    //printf("estado: %d\n", matriz_transicao[estado_atual][id_char]);
+    // Testar se o próximo estado é estado final
+    int indice_estado_final = busca_binaria(estados_finais, QTD_ESTADOS_FINAIS, matriz_transicao[estado_atual][id_char]);
+    if(indice_estado_final >= 0) {
+        // Significa que o próximo estado é um estado final
+        valor_estado_final = estados_finais[indice_estado_final];
+        return matriz_transicao[valor_estado_final][0]; // A coluna não faz diferença se é estado final
+    }
 
-    // int aux = matriz_transicao[estado_atual][id_char]; //Determinando o estado atingido após a transição
-    // if (matriz_transicao[aux][0] < 0) //Já chegamos em um estado final
-    //     return matriz_transicao[aux][0];
-
-    // return aux;
-
+    // Se não for estado final, retorna o pŕoximo estado a ser ido
     return matriz_transicao[estado_atual][id_char]; //Determinando o estado atingido após a transição
 }
+
