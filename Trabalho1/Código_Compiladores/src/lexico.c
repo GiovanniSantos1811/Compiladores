@@ -176,10 +176,6 @@ char simbolos[TAM_VETOR_CARACTERES] = {
     '(', ')', '{', '}', '\'', '\t', '\n', ' ', '.', EOF
 };
 
-// Vetor com os estados finais, inseridos em ordem crescente (facilita a busca)
-int estados_finais[QTD_ESTADOS_FINAIS] = {2, 3, 5, 7, 8, 9, 10, 12, 13, 14, 16, 17, 18, 19, 
-20, 21, 23, 24, 25, 26};
-
 int atribuicao_ID_equivalente(int ID) {
     // Atribuição do ID equivalente na tabela de transição (transformar caractere em numero VÁLIDO da coluna)
     if(ID >= 0 && ID < 52) { // Significa que é uma letra do alfabeto, seja maiúscula ou minúscula
@@ -217,8 +213,8 @@ int transicao(char caractere, int estado_atual){
 
     // Vamos testar o id_char para verificar que o caractere existe no alfabeto do analisador léxico
     if(coluna_char < 0) {
-        // Significa que o caractere não foi encontrado, então é estado 24 (erro genérico)
-        return matriz_transicao[24][0]; // Coluna é indiferente
+        // 
+        return SIMB_NAO_IDENTIFICADO;
     }
     
     //printf("Coluna: %d\n", coluna_char);
@@ -230,17 +226,52 @@ int transicao(char caractere, int estado_atual){
     return aux;
 }
 
+//------------------- Identificação dos tokens --------------------
+char *estados_finais[] = { // Vetor de strings para armazenar os estados finais
+    "ERRO_NUMERO_MAL_FORMADO",
+    "TK_NUM_INT",
+    "TK_ID",
+    "TK_ATRIBUICAO",
+    "SIMB_SOMA",
+    "SIMB_SUB",
+    "SIMB_IGUAL_IGUAL",
+    "SIMB_MENOR",
+    "SIMB_MENOR_MAIOR",
+    "SIMB_MENOR_IGUAL",
+    "SIMB_MAIOR",
+    "SIMB_MAIOR_IGUAL",
+    "SIMB_PONT_VIRG",
+    "SIMB_VIRGULA",
+    "SIMB_FECHA_P",
+    "SIMB_ABRE_P",
+    "COMENTARIO",
+    "ERRO_IDENT_MAL_FORMADO",
+    "ERRO_ATRIB_MAL_FORMADO",
+    "SIMB_PONTO",
+    "SIMB_NAO_IDENTIFICADO"
+};
+
+// Função que retorna o token encontrado (estado final)
+char *retorna_token(int valor_estado_final) {
+    int indice = (valor_estado_final * (-1)) - 1; 
+    
+    return estados_finais[indice];
+}
+
 // Função que identifica um token e sua classe
 void identifica_token(char *char_lido, FILE *programa, char **classe, char **token_atual){
     // Variáveis locais que auxiliarão no processo
-    int estado_atual = 0, cont = 0;
+    int estado_atual = 0, cont = 0, indice_hash;
     char token[100];
     
     // Processo de identificação
     while (1){ //Realizando a leitura até chegar em um estado final -> identificação completa
         estado_atual = transicao(*char_lido, estado_atual);
-
+        //printf("estado: %d -> ", estado_atual);
+        
         if (estado_atual == 0){ //Estado inicial
+            if (*char_lido == EOF) //Garantindo que não vai ficar preso lendo um espaço no fim do arquivo
+                break;
             *char_lido = fgetc(programa);
         }
         else if (estado_atual > 0) { //Estado intermediário
@@ -249,26 +280,31 @@ void identifica_token(char *char_lido, FILE *programa, char **classe, char **tok
         }
         else { //Estado final
             if (cont > 0){ //Chegou em um estado final passando por pelo menos um estado intermediário
-                if (token[0] == ':'){ //Garantindo que vá incluir o = no símbolo de atribuição depois do caractere :
+                //Análise dos tokens que são símbolos
+                if ((token[0] == ':' && *char_lido == '=') || token[0] == '{' || (token[0] == '>' && *char_lido == '=') || (token[0] == '<' && (*char_lido == '>' || *char_lido == '='))){ 
                     token[cont++] = *char_lido;
-                    *char_lido = fgetc(programa); //Garantindo que não vá ler o caractere : duas vezes
+                    *char_lido = fgetc(programa); //Garantindo que não vá ler o caractere final duas vezes
                 }
                 token[cont] = '\0';
 
-                //PRECISA VERIFICAR NA TABELA HASH SE É PALAVRA RESERVADA OU NÃO
-                strcpy(*classe, "TESTE1"); //Passando a classe desse token por referência
-                
+                //Determinação da classe
+                indice_hash = buscar(token);
+                if(indice_hash > 0) { //Significa que a palavra buscada na hash está lá, então é uma palavra reservada
+                    strcpy(*classe, token);
+                }
+                else
+                    strcpy(*classe, retorna_token(estado_atual)); //Passando a classe desse token por referência
+                //strcpy(*classe, "TESTE 1");
             }
             else{ //Armazenando vírgulas, pontos, etc. (não tem estado intermediário, vai direto do inicial pro final)
                 token[0] = *char_lido;
                 token[1] = '\0';
                 *char_lido = fgetc(programa); //Garantindo que não fique fazendo transição com caractere repetido
 
-                strcpy(*classe, "TESTE2"); //Passando a classe desse token por referência
-                
-                //SÓ VERIFICAR A QUAL CLASSE PERTENCE ANTES DE ESCREVER NO ARQUIVO (DÁ PRA MONTAR UM VETOR DE CORRESPONDÊNCIA COM OS DEFINES LÁ PRA VERIFICAR ISSO)
+                strcpy(*classe, retorna_token(estado_atual)); //Passando a classe desse token por referência
+                //strcpy(*classe, "TESTE 2");
             }
-            //printf("Estado: %d, token: %s\n", estado_atual, token);
+            printf("Estado: %d, token: %s\n", estado_atual, token);
             //Como chegou em um estado final, a identificação desse token está completa
             strcpy(*token_atual, token); //Passando o token atual por referência
             

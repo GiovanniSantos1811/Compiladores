@@ -21,16 +21,16 @@
 #define SIMB_MENOR_MAIOR -9
 #define SIMB_MENOR_IGUAL -10
 #define SIMB_MAIOR -11
-#define SIMB_MAIOR_IGUAL -11
-#define SIMB_PONT_VIRG -12
-#define SIMB_VIRGULA -13
-#define SIMB_FECHA_P -14
-#define SIMB_ABRE_P -15
-#define COMENTARIO -16
-#define ERRO_IDENT_MAL_FORMADO -17
-#define ERRO_ATRIB_MAL_FORMADO -18
-#define SIMB_PONTO -19
-#define SIMB_NAO_IDENTIFICADO -20
+#define SIMB_MAIOR_IGUAL -12
+#define SIMB_PONT_VIRG -13
+#define SIMB_VIRGULA -14
+#define SIMB_FECHA_P -15
+#define SIMB_ABRE_P -16
+#define COMENTARIO -17
+#define ERRO_IDENT_MAL_FORMADO -18
+#define ERRO_ATRIB_MAL_FORMADO -19
+#define SIMB_PONTO -20
+#define SIMB_NAO_IDENTIFICADO -21
 
 // Matrizes e vetores
 int matriz_transicao[NUM_ESTADOS][NUM_SIMBOLOS+2];
