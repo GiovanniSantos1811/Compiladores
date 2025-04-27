@@ -4,8 +4,8 @@
 #include <stdlib.h>
 
 // Constantes
-#define NUM_ESTADOS 27
-#define NUM_SIMBOLOS 18 //18 simbolos (:	 =	 +	-	<	>	;	,	(	)	{	}	'	\t	\n espaço . EOF)
+#define NUM_ESTADOS 29
+#define NUM_SIMBOLOS 19 //18 simbolos (:	 =	 +	-	<	>	;	,	(	)	{	}	'	\t	\n espaço . *   /)
 #define TAM_VETOR_CARACTERES 62+NUM_SIMBOLOS // 52 (a-zA-Z) letras + 10 dígitos + NUM_SIMBOLOS
 #define QTD_ESTADOS_FINAIS 22 // Quantidade de estados finais
 
@@ -30,7 +30,9 @@
 #define ERRO_IDENT_MAL_FORMADO -18
 #define ERRO_ATRIB_MAL_FORMADO -19
 #define SIMB_PONTO -20
-#define SIMB_NAO_IDENTIFICADO -21
+#define SIMB_MULTIPLIC -21
+#define SIMB_DIV -22
+#define SIMB_NAO_IDENTIFICADO -23
 
 // Matrizes e vetores
 int matriz_transicao[NUM_ESTADOS][NUM_SIMBOLOS+2];
