@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define TAM_TABELA 20  // Estamos trabalhando com um fator de carga de 50% (vamos inserir 10 palavras com um vetor de 20)
+#define TAM_TABELA 22  // Estamos trabalhando com um fator de carga de 50% (vamos inserir 11 palavras com um vetor de 20)
 
 // Estrutura de um nó da lista ligada
 typedef struct tipo_no {
@@ -24,7 +24,7 @@ unsigned int hash(const char* str) {
 }
 
 // Inserir uma palavra na tabela
-void inserir(const char *palavra) { // Inserena cabeça da lista
+void inserir(const char *palavra) { // Insere na cabeça da lista
     unsigned int indice = hash(palavra);
     
     // Verifica se a palavra já existe

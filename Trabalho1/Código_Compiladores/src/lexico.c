@@ -1,5 +1,7 @@
 #include <stdio.h>
-#include "automato.h"
+#include "lexico.h"
+#include "hash.h"
+#include <string.h>
 
 int matriz_transicao[NUM_ESTADOS][NUM_SIMBOLOS+2] = { // +2 para considerar uma coluna para Letras e uma para Dígitos
     // Estado 0
@@ -226,4 +228,66 @@ int transicao(char caractere, int estado_atual){
         return matriz_transicao[aux][0];
 
     return aux;
+}
+
+// Função que identifica um token e sua classe
+void identifica_token(char *char_lido, FILE *programa, char **classe, char **token_atual){
+    // Variáveis locais que auxiliarão no processo
+    int estado_atual = 0, cont = 0;
+    char token[100];
+    
+    // Processo de identificação
+    while (1){ //Realizando a leitura até chegar em um estado final -> identificação completa
+        estado_atual = transicao(*char_lido, estado_atual);
+
+        if (estado_atual == 0){ //Estado inicial
+            *char_lido = fgetc(programa);
+        }
+        else if (estado_atual > 0) { //Estado intermediário
+            token[cont++] = *char_lido;
+            *char_lido = fgetc(programa);
+        }
+        else { //Estado final
+            if (cont > 0){ //Chegou em um estado final passando por pelo menos um estado intermediário
+                if (token[0] == ':'){ //Garantindo que vá incluir o = no símbolo de atribuição depois do caractere :
+                    token[cont++] = *char_lido;
+                    *char_lido = fgetc(programa); //Garantindo que não vá ler o caractere : duas vezes
+                }
+                token[cont] = '\0';
+
+                //PRECISA VERIFICAR NA TABELA HASH SE É PALAVRA RESERVADA OU NÃO
+                strcpy(*classe, "TESTE1"); //Passando a classe desse token por referência
+                
+            }
+            else{ //Armazenando vírgulas, pontos, etc. (não tem estado intermediário, vai direto do inicial pro final)
+                token[0] = *char_lido;
+                token[1] = '\0';
+                *char_lido = fgetc(programa); //Garantindo que não fique fazendo transição com caractere repetido
+
+                strcpy(*classe, "TESTE2"); //Passando a classe desse token por referência
+                
+                //SÓ VERIFICAR A QUAL CLASSE PERTENCE ANTES DE ESCREVER NO ARQUIVO (DÁ PRA MONTAR UM VETOR DE CORRESPONDÊNCIA COM OS DEFINES LÁ PRA VERIFICAR ISSO)
+            }
+            //printf("Estado: %d, token: %s\n", estado_atual, token);
+            //Como chegou em um estado final, a identificação desse token está completa
+            strcpy(*token_atual, token); //Passando o token atual por referência
+            
+            break; //Parando a identificação
+        }
+    }
+}
+
+//-------------------- Tabela Hash ---------------
+void preenche_hash(){
+    inserir("CONST");
+    inserir("VAR");
+    inserir("PROCEDURE");
+    inserir("CALL");
+    inserir("BEGIN");
+    inserir("END");
+    inserir("IF");
+    inserir("THEN");
+    inserir("WHILE");
+    inserir("DO");
+    inserir("ODD");
 }

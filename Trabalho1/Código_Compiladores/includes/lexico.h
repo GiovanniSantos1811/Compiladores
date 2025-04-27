@@ -1,6 +1,8 @@
 #ifndef AUTOMATO_H
 #define AUTOMATO_H
 
+#include <stdlib.h>
+
 // Constantes
 #define NUM_ESTADOS 27
 #define NUM_SIMBOLOS 18 //18 simbolos (:	 =	 +	-	<	>	;	,	(	)	{	}	'	\t	\n espaço . EOF)
@@ -39,5 +41,11 @@ char simbolos[TAM_VETOR_CARACTERES];
 int atribuicao_ID_equivalente(int ID);
 int encontrarID(char c);
 int transicao(char caractere, int estado_atual); 
+
+void identifica_token(char *char_lido, FILE *programa, char **classe, char **token_atual);
+
+// Funções relativas ao hash
+void preenche_hash(); //Preenche a tabela hash com as palavras reservadas
+
 
 #endif

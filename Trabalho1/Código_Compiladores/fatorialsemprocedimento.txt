@@ -1,6 +1,6 @@
 VAR n, fat;
 BEGIN
-    n:=4;
+    n:=45;
     fat:=1;
     WHILE n>1 DO
         BEGIN
