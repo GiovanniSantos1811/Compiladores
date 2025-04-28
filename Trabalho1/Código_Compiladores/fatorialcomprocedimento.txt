@@ -6,9 +6,10 @@ BEGIN
         BEGIN
         fat:=fat!n;
         n:=n-1@;
-        END
+        END {comentario com
+        quebra de linha}
 END;
 BEGIN
     n:=4;
     CALL fatorial
-END.
+END. {comentario!}
