@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 // Constantes
-#define NUM_ESTADOS 29
+#define NUM_ESTADOS 30
 #define NUM_SIMBOLOS 19 //18 simbolos (:	 =	 +	-	<	>	;	,	(	)	{	}	'	\t	\n espaço . *   /)
 #define TAM_VETOR_CARACTERES 62+NUM_SIMBOLOS // 52 (a-zA-Z) letras + 10 dígitos + NUM_SIMBOLOS
 #define QTD_ESTADOS_FINAIS 22 // Quantidade de estados finais
@@ -35,7 +35,7 @@
 #define SIMB_NAO_IDENTIFICADO -23
 
 // Matrizes e vetores
-int matriz_transicao[NUM_ESTADOS][NUM_SIMBOLOS+2];
+int matriz_transicao[NUM_ESTADOS][NUM_SIMBOLOS+3];
 char simbolos[TAM_VETOR_CARACTERES];
 
 

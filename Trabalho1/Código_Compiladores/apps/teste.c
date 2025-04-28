@@ -9,9 +9,7 @@ int main() {
     //------------- Análise Léxica ----------------------
     preenche_hash();
     
-    leitura_arquivo_lexico("fatorialsemprocedimento.txt");
-
-    //printf("%d\n", transicao(' ', 0));
+    leitura_arquivo_lexico("fatorialcomprocedimento.txt");
     
     return 0;
 }

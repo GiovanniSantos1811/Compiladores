@@ -1,11 +1,11 @@
 VAR n, fat;
 PROCEDURE fatorial;
 BEGIN
-    fat:=1;
-    WHILE n>1 DO
+    fat:1;
+    WHILE n>=1 DO
         BEGIN
-        fat:=fat*n;
-        n:=n-1;
+        fat:=fat!n;
+        n:=n-1@;
         END
 END;
 BEGIN

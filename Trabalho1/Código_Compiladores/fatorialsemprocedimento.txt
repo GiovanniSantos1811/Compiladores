@@ -1,8 +1,8 @@
 VAR n, fat;
 BEGIN
-    n:45;
+    n:45!;
     fat:=1;
-    WHILE n<!1 DO
+    WHILE n<=1 DO
         BEGIN
         fat:=fat*n;
         n:=n-1;
