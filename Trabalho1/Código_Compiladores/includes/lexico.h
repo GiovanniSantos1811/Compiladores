@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 // Constantes
-#define NUM_ESTADOS 31
+#define NUM_ESTADOS 30
 #define NUM_SIMBOLOS 20 //20 simbolos (: = + - < > ; , ( ) { } ' \t \n espaço . * / EOF)
 #define TAM_VETOR_CARACTERES 62+NUM_SIMBOLOS // 52 (a-zA-Z) letras + 10 dígitos + NUM_SIMBOLOS
 #define QTD_ESTADOS_FINAIS 23 // Quantidade de estados finais
@@ -27,7 +27,6 @@
 #define SIMB_FECHA_P -15
 #define SIMB_ABRE_P -16
 #define COMENTARIO -17
-#define ERRO_IDENT_MAL_FORMADO -18
 #define ERRO_ATRIB_MAL_FORMADO -19
 #define SIMB_PONTO -20
 #define SIMB_MULTIPLIC -21
