@@ -263,7 +263,6 @@ char *estados_finais[] = { // Vetor de strings para armazenar os estados finais
     "SIMB_FECHA_P",
     "SIMB_ABRE_P",
     "COMENTARIO",
-    "ERRO_IDENT_MAL_FORMADO",
     "ERRO_ATRIB_MAL_FORMADO",
     "SIMB_PONTO",
     "SIMB_MULTIPLIC",

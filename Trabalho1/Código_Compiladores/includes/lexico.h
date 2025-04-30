@@ -27,12 +27,12 @@
 #define SIMB_FECHA_P -15
 #define SIMB_ABRE_P -16
 #define COMENTARIO -17
-#define ERRO_ATRIB_MAL_FORMADO -19
-#define SIMB_PONTO -20
-#define SIMB_MULTIPLIC -21
-#define SIMB_DIV -22
-#define SIMB_NAO_IDENTIFICADO -23
-#define ERRO_COMENT_MAL_FORMADO -24
+#define ERRO_ATRIB_MAL_FORMADO -18
+#define SIMB_PONTO -19
+#define SIMB_MULTIPLIC -20
+#define SIMB_DIV -21
+#define SIMB_NAO_IDENTIFICADO -22
+#define ERRO_COMENT_MAL_FORMADO -23
 
 // Matrizes e vetores
 int matriz_transicao[NUM_ESTADOS][NUM_SIMBOLOS+3];
