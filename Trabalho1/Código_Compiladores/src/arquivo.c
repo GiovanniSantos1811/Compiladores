@@ -35,10 +35,13 @@ int leitura_arquivo_lexico(const char *nome_arquivo){
     classe = calloc(30, sizeof(char));
     token_atual = calloc(100, sizeof(char));
 
-    while (char_lido != EOF) { //Realizar a leitura até o fim do arquivo
+    while (1) { //Realizar a leitura do arquivo
         identifica_token(&char_lido, programa, &classe, &token_atual); //Identifica o par token-classe 
 
-        escrever_arquivo(output, token_atual, classe); //Escreve o par token-classe no arquivo de saída
+        if (char_lido != EOF) //Garantindo que não leu o fim de arquivo e não vai gerar um token-classe repetido
+            escrever_arquivo(output, token_atual, classe); //Escreve o par token-classe no arquivo de saída
+        else
+            break;
     }
 
     free(classe);

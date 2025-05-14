@@ -290,7 +290,7 @@ void identifica_token(char *char_lido, FILE *programa, char **classe, char **tok
         //printf("estado: %d -> ", estado_atual);
         
         if (estado_atual == 0){ //Estado inicial
-            if (*char_lido == EOF) //Garantindo que não vai ficar preso lendo um espaço no fim do arquivo
+            if (*char_lido == EOF)
                 break;
             *char_lido = fgetc(programa);
         }
