@@ -1,8 +1,6 @@
 #ifndef AUTOMATO_H
 #define AUTOMATO_H
 
-#include <stdlib.h>
-
 // Constantes
 #define NUM_ESTADOS 30
 #define NUM_SIMBOLOS 20 //20 simbolos (: = + - < > ; , ( ) { } ' \t \n espaço . * / EOF)

@@ -11,7 +11,7 @@ void escrever_arquivo(FILE *arquivo, char *conteudoToken, char *conteudoClass) {
     fputs("\n", arquivo);
 }
 
-int leitura_arquivo_lexico(const char *nome_arquivo){
+int leitura_arquivo_lexico(const char *nome_arquivo){ //Função que realiza a identificação dos tokens do programa como um todo (fins didáticos apenas)
     const char *nome_programa = nome_arquivo;
     const char *nome_output = "output.txt";
     remove(nome_output);
@@ -51,4 +51,4 @@ int leitura_arquivo_lexico(const char *nome_arquivo){
     fclose(programa);
 }
 
-
+int leitura_arquivo_sintatico()
