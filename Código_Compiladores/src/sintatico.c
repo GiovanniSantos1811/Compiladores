@@ -178,14 +178,30 @@ void Expressao(char *char_lido, FILE *programa, char **classe, char **token_atua
                 break;
             }
         }
+        printf("Expressao Sucesso!\n");
     }
 }
 
 void Fator(char *char_lido, FILE *programa, char **classe, char **token_atual){
-
+    if (!strcmp(*classe, "TK_ID")){
+        printf("Fator Sucesso! - ident\n");
+    }
+    else if (!strcmp(*classe, "TK_NUM_INT")){
+        printf("Fator Sucesso! - numero\n");
+    }
+    else if (!strcmp(*classe, "TK_ABRE_P")){
+        identifica_token(char_lido, programa, classe, token_atual);
+        Expressao(char_lido, programa, classe, token_atual);
+        identifica_token(char_lido, programa, classe, token_atual);
+        if (!strcmp(*classe, "TK_FECHA_P")){
+            printf("Fator Sucesso! - parenteses\n");
+        }
+    }
 }
+
 void Mais_Fator(char *char_lido, FILE *programa, char **classe, char **token_atual){
-    
+
+
 }
 void Condicao(char *char_lido, FILE *programa, char **classe, char **token_atual){
 
