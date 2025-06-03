@@ -209,5 +209,18 @@ void Mais_Fator(char *char_lido, FILE *programa, char **classe, char **token_atu
 }
 
 void Condicao(char *char_lido, FILE *programa, char **classe, char **token_atual){
+    if (!strcmp(*classe, "ODD")){
+        identifica_token(char_lido, programa, classe, token_atual);
+        Expressao(char_lido, programa, classe, token_atual);
+    }
+    else if (!strcmp(*classe, "PRIMEIRO DE EXPRESSÃO")){ //INSERIR PRIMEIRO DE EXPRESSÃO!
+        identifica_token(char_lido, programa, classe, token_atual);
+        Expressao(char_lido, programa, classe, token_atual);
 
+        identifica_token(char_lido, programa, classe, token_atual);
+        if (!strcmp(*classe, "SIMB_IGUAL_IGUAL") || !strcmp(*classe, "SIMB_MENOR_MAIOR") || !strcmp(*classe, "SIMB_MENOR_IGUAL") || !strcmp(*classe, "SIMB_MAIOR") || !strcmp(*classe, "SIMB_MENOR") || !strcmp(*classe, "SIMB_MAIOR_IGUAL")){
+            identifica_token(char_lido, programa, classe, token_atual);
+            Expressao(char_lido, programa, classe, token_atual);
+        }
+    }
 }
