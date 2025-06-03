@@ -200,9 +200,14 @@ void Fator(char *char_lido, FILE *programa, char **classe, char **token_atual){
 }
 
 void Mais_Fator(char *char_lido, FILE *programa, char **classe, char **token_atual){
-
-
+    while (!strcmp(*classe, "SIMB_MULTIPLIC") || !strcmp(*classe, "SIMB_DIV")){
+        identifica_token(char_lido, programa, classe, token_atual);
+        Fator(char_lido, programa, classe, token_atual);
+        identifica_token(char_lido, programa, classe, token_atual);
+    }
+    printf("Mais Fator Sucesso!\n");
 }
+
 void Condicao(char *char_lido, FILE *programa, char **classe, char **token_atual){
 
 }
