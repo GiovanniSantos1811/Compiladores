@@ -27,19 +27,25 @@ void ASD(FILE *programa){
     free(token_atual);
 }
 
-void Bloco(char *char_lido, FILE *programa, char **classe, char **token_atual){
+// void Bloco(char *char_lido, FILE *programa, char **classe, char **token_atual){
+//     Constante(char_lido, programa, classe, token_atual);
+//     identifica_token(char_lido, programa, classe, token_atual);
+//     Variavel(char_lido, programa, classe, token_atual);
+//     identifica_token(char_lido, programa, classe, token_atual);
+//     Procedimento(char_lido, programa, classe, token_atual);
+//     /*identifica_token(char_lido, programa, classe, token_atual);
+//     Comando(char_lido, programa, classe, token_atual);*/
+// }
+
+void Programa(char *char_lido, FILE *programa, char **classe, char **token_atual){
+    // Esta função chama constante, variavel, procedimento e comando
     Constante(char_lido, programa, classe, token_atual);
     identifica_token(char_lido, programa, classe, token_atual);
     Variavel(char_lido, programa, classe, token_atual);
     identifica_token(char_lido, programa, classe, token_atual);
     Procedimento(char_lido, programa, classe, token_atual);
-    /*identifica_token(char_lido, programa, classe, token_atual);
-    Comando(char_lido, programa, classe, token_atual);*/
-}
-
-void Programa(char *char_lido, FILE *programa, char **classe, char **token_atual){
-    // Esta função chama constante, variavel, procedimento e comando
-    Bloco(char_lido, programa, classe, token_atual);
+    identifica_token(char_lido, programa, classe, token_atual);
+    Comando(char_lido, programa, classe, token_atual);
 
     identifica_token(char_lido, programa, classe, token_atual);
     if(!strcmp(*classe, "SIMB_PONTO")) { // Tudo certo, finaliza o programa
