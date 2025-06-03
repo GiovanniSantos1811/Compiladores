@@ -272,8 +272,8 @@ char *estados_finais[] = { // Vetor de strings para armazenar os estados finais
     "ERRO_COMENT_MAL_FORMADO"
 };
 
-// Função que retorna o token encontrado (estado final)
-char *retorna_token(int valor_estado_final) {
+// Função que retorna a classe do token 
+char *retorna_classe(int valor_estado_final) {
     int indice = (valor_estado_final * (-1)) - 1; 
     
     return estados_finais[indice];
@@ -314,7 +314,7 @@ void identifica_token(char *char_lido, FILE *programa, char **classe, char **tok
                     strcpy(*classe, token);
                 }
                 else
-                    strcpy(*classe, retorna_token(estado_atual)); //Passando a classe desse token por referência
+                    strcpy(*classe, retorna_classe(estado_atual)); //Passando a classe desse token por referência
                 //strcpy(*classe, "TESTE 1");
             }
             else{ //Armazenando vírgulas, pontos, etc. (não tem estado intermediário, vai direto do inicial pro final)
@@ -322,7 +322,7 @@ void identifica_token(char *char_lido, FILE *programa, char **classe, char **tok
                 token[1] = '\0';
                 *char_lido = fgetc(programa); //Garantindo que não fique fazendo transição com caractere repetido
 
-                strcpy(*classe, retorna_token(estado_atual)); //Passando a classe desse token por referência
+                strcpy(*classe, retorna_classe(estado_atual)); //Passando a classe desse token por referência
                 //strcpy(*classe, "TESTE 2");
             }
             //printf("Estado: %d, lexema: %s\n", estado_atual, token);

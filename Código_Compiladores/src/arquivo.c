@@ -3,8 +3,10 @@
 
 #include "arquivo.h"
 #include "lexico.h"
+#include "sintatico.h"
 
-void escrever_arquivo(FILE *arquivo, char *conteudoToken, char *conteudoClass) {
+//------------------------ Léxico -------------------------------------
+void saida_lexico(FILE *arquivo, char *conteudoToken, char *conteudoClass) {
     fputs(conteudoToken, arquivo);
     fputs(", ", arquivo);
     fputs(conteudoClass, arquivo);
@@ -35,11 +37,11 @@ int leitura_arquivo_lexico(const char *nome_arquivo){ //Função que realiza a i
     classe = calloc(30, sizeof(char));
     token_atual = calloc(100, sizeof(char));
 
-    while (1) { // Realizar a leitura do arquivo
+    while (1) { //Realizar a leitura do arquivo
         identifica_token(&char_lido, programa, &classe, &token_atual); //Identifica o par token-classe 
 
-        if (char_lido != EOF) // Garantindo que não leu o fim de arquivo e não vai gerar um token-classe repetido
-            escrever_arquivo(output, token_atual, classe); //Escreve o par token-classe no arquivo de saída
+        if (char_lido != EOF) //Garantindo que não leu o fim de arquivo e não vai gerar um token-classe repetido
+            saida_lexico(output, token_atual, classe); //Escreve o par token-classe no arquivo de saída
         else
             break;
     }
@@ -51,4 +53,31 @@ int leitura_arquivo_lexico(const char *nome_arquivo){ //Função que realiza a i
     fclose(programa);
 }
 
-int leitura_arquivo_sintatico();
+//------------------------------ Sintático -----------------------------------
+void saida_sintatico(FILE *arquivo, char *msg){
+    
+}
+
+int leitura_arquivo_sintatico(const char *nome_arquivo){
+    const char *nome_programa = nome_arquivo;
+    const char *nome_output = "output.txt";
+    remove(nome_output);
+
+    //Verificando a abertura adequada do arquivo do código e a criação do de saída 
+    FILE *programa = fopen(nome_programa, "r");
+    if (programa == NULL) {
+        perror("Erro ao abrir o arquivo");
+        return -1;
+    }
+
+    FILE *output = fopen(nome_output, "w");
+    if (output == NULL) {
+        perror("Erro ao abrir o arquivo");
+        return -1;
+    }
+
+    ASD(programa); //Fazendo a análise sintática descendente preditiva recursiva 
+
+    fclose(output);
+    fclose(programa);
+}
