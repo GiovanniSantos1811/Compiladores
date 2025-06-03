@@ -30,8 +30,11 @@ void ASD(FILE *programa){
 void Programa(char *char_lido, FILE *programa, char **classe, char **token_atual){
     // Esta função chama constante, variavel, procedimento e comando
     Constante(char_lido, programa, classe, token_atual);
-    /*Variavel(char_lido, programa, classe, token_atual);
+    identifica_token(char_lido, programa, classe, token_atual);
+    Variavel(char_lido, programa, classe, token_atual);
+    /*identifica_token(char_lido, programa, classe, token_atual);
     Procedimento(char_lido, programa, classe, token_atual);
+    identifica_token(char_lido, programa, classe, token_atual);
     Comando(char_lido, programa, classe, token_atual);*/
 
     identifica_token(char_lido, programa, classe, token_atual);
@@ -41,6 +44,9 @@ void Programa(char *char_lido, FILE *programa, char **classe, char **token_atual
         
         printf("Finalizando o programa...\n");
         return; 
+    }
+    else{
+        printf("Erro sintático - programa foi finalizado sem .\n");
     }
     identifica_token(char_lido, programa, classe, token_atual); //Consumindo o EOF
 }
@@ -69,7 +75,22 @@ void Constante(char *char_lido, FILE *programa, char **classe, char **token_atua
     }
 }
 
-void Variavel(char *char_lido, FILE *programa, char **classe, char **token_atual);
+void Variavel(char *char_lido, FILE *programa, char **classe, char **token_atual){
+    if (!strcmp(*classe, "VAR")){
+        while (1){
+            identifica_token(char_lido, programa, classe, token_atual);
+            if (!strcmp(*classe, "TK_ID")){
+                identifica_token(char_lido, programa, classe, token_atual);
+                if (strcmp(*classe, "SIMB_VIRGULA")){ //Caso seja diferente de SIMB_VIRGULA, sai do loop e vai buscar o ;
+                    break;
+                }
+            }
+        }
+        if (!strcmp(*classe, "SIMB_PONT_VIRG")){
+            printf("Variável Sucesso!\n");
+        }
+    }
+}
 void Procedimento(char *char_lido, FILE *programa, char **classe, char **token_atual);
 void Comando(char *char_lido, FILE *programa, char **classe, char **token_atual);
 void Expressao(char *char_lido, FILE *programa, char **classe, char **token_atual);

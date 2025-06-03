@@ -1,1 +1,2 @@
 CONST X = 12, Y = 13;
+VAR real dolla;.
