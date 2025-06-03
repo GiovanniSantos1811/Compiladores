@@ -167,10 +167,26 @@ void Comando(char *char_lido, FILE *programa, char **classe, char **token_atual)
 }
 
 void Expressao(char *char_lido, FILE *programa, char **classe, char **token_atual){
+    if (!strcmp(*classe, "SIMB_SOMA") || !strcmp(*classe, "SIMB_SUB") || !strcmp(*classe, "PRIMEIRO DE FATOR")){ //INSERIR PRIMEIRO DE FATOR
+        while (1){
+            identifica_token(char_lido, programa, classe, token_atual);
+            Fator(char_lido, programa, classe, token_atual);
+            identifica_token(char_lido, programa, classe, token_atual);
+            Mais_Fator(char_lido, programa, classe, token_atual);
+            identifica_token(char_lido, programa, classe, token_atual);
+            if (strcmp(*classe, "SIMB_SOMA") || strcmp(*classe, "SIMB_SUB")){ //Sem + ou -, encerasse o ciclo
+                break;
+            }
+        }
+    }
+}
+
+void Fator(char *char_lido, FILE *programa, char **classe, char **token_atual){
 
 }
-void Fator(char *char_lido, FILE *programa, char **classe, char **token_atual);
-void Mais_Fator(char *char_lido, FILE *programa, char **classe, char **token_atual);
-void Condicao(char *char_lido, FILE *programa, char **classe, char **token_atual){
+void Mais_Fator(char *char_lido, FILE *programa, char **classe, char **token_atual){
     
+}
+void Condicao(char *char_lido, FILE *programa, char **classe, char **token_atual){
+
 }
