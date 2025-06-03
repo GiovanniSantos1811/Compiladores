@@ -27,15 +27,19 @@ void ASD(FILE *programa){
     free(token_atual);
 }
 
-void Programa(char *char_lido, FILE *programa, char **classe, char **token_atual){
-    // Esta função chama constante, variavel, procedimento e comando
+void Bloco(char *char_lido, FILE *programa, char **classe, char **token_atual){
     Constante(char_lido, programa, classe, token_atual);
     identifica_token(char_lido, programa, classe, token_atual);
     Variavel(char_lido, programa, classe, token_atual);
-    /*identifica_token(char_lido, programa, classe, token_atual);
-    Procedimento(char_lido, programa, classe, token_atual);
     identifica_token(char_lido, programa, classe, token_atual);
+    Procedimento(char_lido, programa, classe, token_atual);
+    /*identifica_token(char_lido, programa, classe, token_atual);
     Comando(char_lido, programa, classe, token_atual);*/
+}
+
+void Programa(char *char_lido, FILE *programa, char **classe, char **token_atual){
+    // Esta função chama constante, variavel, procedimento e comando
+    Bloco(char_lido, programa, classe, token_atual);
 
     identifica_token(char_lido, programa, classe, token_atual);
     if(!strcmp(*classe, "SIMB_PONTO")) { // Tudo certo, finaliza o programa
@@ -91,7 +95,23 @@ void Variavel(char *char_lido, FILE *programa, char **classe, char **token_atual
         }
     }
 }
-void Procedimento(char *char_lido, FILE *programa, char **classe, char **token_atual);
+
+void Procedimento(char *char_lido, FILE *programa, char **classe, char **token_atual){
+    if (!strcmp(*classe, "PROCEDURE")){
+        identifica_token(char_lido, programa, classe, token_atual);
+        if (!strcmp(*classe, "TK_ID")){
+            identifica_token(char_lido, programa, classe, token_atual);
+            if (!strcmp(*classe, "SIMB_PONT_VIRG")){
+                Bloco(char_lido, programa, classe, token_atual);
+                identifica_token(char_lido, programa, classe, token_atual);
+                if (!strcmp(*classe, "SIMB_PONT_VIRG")){
+                    printf("Procedimento Sucesso!\n");
+                }
+            }
+        }
+    }
+}
+
 void Comando(char *char_lido, FILE *programa, char **classe, char **token_atual);
 void Expressao(char *char_lido, FILE *programa, char **classe, char **token_atual);
 void Fator(char *char_lido, FILE *programa, char **classe, char **token_atual);
