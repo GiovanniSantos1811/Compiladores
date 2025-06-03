@@ -112,8 +112,65 @@ void Procedimento(char *char_lido, FILE *programa, char **classe, char **token_a
     }
 }
 
-void Comando(char *char_lido, FILE *programa, char **classe, char **token_atual);
-void Expressao(char *char_lido, FILE *programa, char **classe, char **token_atual);
+void Comando(char *char_lido, FILE *programa, char **classe, char **token_atual){
+    if (!strcmp(*classe, "TK_ID")){
+        identifica_token(char_lido, programa, classe, token_atual);
+        if (!strcmp(*classe, "TK_ATRIBUICAO")){
+            identifica_token(char_lido, programa, classe, token_atual);
+            Expressao(char_lido, programa, classe, token_atual);
+            printf("Comando Sucesso! - Atribuição\n");
+        }
+    }
+    else if (!strcmp(*classe, "CALL")){
+        identifica_token(char_lido, programa, classe, token_atual);
+        if (!strcmp(*classe, "TK_ID")){
+            printf("Comando Sucesso! - CALL Procedure\n");
+        }
+    }
+    else if (!strcmp(*classe, "BEGIN")){
+        while (1){
+            identifica_token(char_lido, programa, classe, token_atual);
+            Comando(char_lido, programa, classe, token_atual);
+            identifica_token(char_lido, programa, classe, token_atual);
+            if (strcmp(*classe, "SIMB_PONT_VIRG")){ //Caso seja diferente de ;, encerra o ciclo e busca END
+                break;
+            }
+        }
+        if (!strcmp(*classe, "END")){
+            printf("Comando Sucesso! - BEGIN ... END\n");
+        }
+
+    }
+    else if (!strcmp(*classe, "IF")){
+        identifica_token(char_lido, programa, classe, token_atual);
+        Condicao(char_lido, programa, classe, token_atual);
+        identifica_token(char_lido, programa, classe, token_atual);
+        if (!strcmp(*classe, "THEN")){
+            identifica_token(char_lido, programa, classe, token_atual);
+            Comando(char_lido, programa, classe, token_atual);
+            printf("Comando Sucesso! - IF\n");
+        }
+    }
+    else if (!strcmp(*classe, "WHILE")){
+        identifica_token(char_lido, programa, classe, token_atual);
+        if (!strcmp(*classe, "WHILE")){
+            identifica_token(char_lido, programa, classe, token_atual);
+            Condicao(char_lido, programa, classe, token_atual);
+            identifica_token(char_lido, programa, classe, token_atual);
+            if (!strcmp(*classe, "DO")){
+                identifica_token(char_lido, programa, classe, token_atual);
+                Comando(char_lido, programa, classe, token_atual);
+                printf("Comando Sucesso! - WHILE\n");
+            }
+        }
+    }
+}
+
+void Expressao(char *char_lido, FILE *programa, char **classe, char **token_atual){
+
+}
 void Fator(char *char_lido, FILE *programa, char **classe, char **token_atual);
 void Mais_Fator(char *char_lido, FILE *programa, char **classe, char **token_atual);
-void Condicao(char *char_lido, FILE *programa, char **classe, char **token_atual);
+void Condicao(char *char_lido, FILE *programa, char **classe, char **token_atual){
+    
+}
