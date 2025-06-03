@@ -42,7 +42,9 @@ int atribuicao_ID_equivalente(int ID);
 int encontrarID(char c);
 int transicao(char caractere, int estado_atual); 
 
-void identifica_token(char *char_lido, FILE *programa, char **classe, char **token_atual);
+int identifica_token(char *char_lido, FILE *programa, char **classe, char **token_atual, int *cont_linha);
+char *obtem_token_e_erro(char *char_lido, FILE *programa, char **classe, char **token_atual, int *cont_linha); // contém tratamento de erros léxicos para utilização do sintático
+
 
 // Funções relativas ao hash
 void preenche_hash(); //Preenche a tabela hash com as palavras reservadas

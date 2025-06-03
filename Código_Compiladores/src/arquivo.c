@@ -36,9 +36,10 @@ int leitura_arquivo_lexico(const char *nome_arquivo){ //Função que realiza a i
     char *classe, *token_atual;
     classe = calloc(30, sizeof(char));
     token_atual = calloc(100, sizeof(char));
+    int cont_linha = 1;
 
     while (1) { //Realizar a leitura do arquivo
-        identifica_token(&char_lido, programa, &classe, &token_atual); //Identifica o par token-classe 
+        identifica_token(&char_lido, programa, &classe, &token_atual, &cont_linha); //Identifica o par token-classe 
 
         if (char_lido != EOF) //Garantindo que não leu o fim de arquivo e não vai gerar um token-classe repetido
             saida_lexico(output, token_atual, classe); //Escreve o par token-classe no arquivo de saída
@@ -55,7 +56,8 @@ int leitura_arquivo_lexico(const char *nome_arquivo){ //Função que realiza a i
 
 //------------------------------ Sintático -----------------------------------
 void saida_sintatico(FILE *arquivo, char *msg){
-    
+    fputs(msg, arquivo);
+    fputs("\n", arquivo);
 }
 
 int leitura_arquivo_sintatico(const char *nome_arquivo){

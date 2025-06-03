@@ -280,7 +280,7 @@ char *retorna_classe(int valor_estado_final) {
 }
 
 // Função que identifica um token e sua classe
-void identifica_token(char *char_lido, FILE *programa, char **classe, char **token_atual){
+int identifica_token(char *char_lido, FILE *programa, char **classe, char **token_atual, int *cont_linha){
     // Variáveis locais que auxiliarão no processo
     int estado_atual = 0, cont = 0, indice_hash;
     char token[100];
@@ -288,11 +288,12 @@ void identifica_token(char *char_lido, FILE *programa, char **classe, char **tok
     // Processo de identificação
     while (1){ //Realizando a leitura até chegar em um estado final -> identificação completa
         estado_atual = transicao(*char_lido, estado_atual);
-        //printf("estado: %d -> ", estado_atual);
-        
+
         if (estado_atual == 0){ //Estado inicial
             if (*char_lido == EOF)
                 break;
+            if (*char_lido == '\n') //Atualizando a linha atual
+                (*cont_linha)++;
             *char_lido = fgetc(programa);
         }
         else if (estado_atual > 0) { //Estado intermediário
@@ -304,6 +305,8 @@ void identifica_token(char *char_lido, FILE *programa, char **classe, char **tok
                 //Análise dos tokens que são símbolos
                 if ((token[0] == ':' && *char_lido == '=') || token[0] == '{' || (token[0] == '>' && *char_lido == '=') || (token[0] == '<' && (*char_lido == '>' || *char_lido == '='))){ 
                     token[cont++] = *char_lido;
+                    if (*char_lido == '\n') //Atualizando a linha atual
+                        (*cont_linha)++;
                     *char_lido = fgetc(programa); //Garantindo que não vá ler o caractere final duas vezes
                 }
                 token[cont] = '\0';
@@ -336,6 +339,32 @@ void identifica_token(char *char_lido, FILE *programa, char **classe, char **tok
             break; //Parando a identificação
         }
     }
+
+    return estado_atual;
+}
+
+char *obtem_token_e_erro(char *char_lido, FILE *programa, char **classe, char **token_atual, int *cont_linha){ //Utilizado pelo sintático
+    int estado_final = identifica_token(char_lido, programa, classe, token_atual, cont_linha);
+    //Vericando se o estado final atingido corresponde a um erro e gerando o log do erro léxico
+    static char mensagem[256];
+    if (estado_final == ERRO_COMENT_MAL_FORMADO){
+        snprintf(mensagem, sizeof(mensagem), "Erro Léxico na linha %d: Comentário mal formado (%s)", *cont_linha, *token_atual);
+        return mensagem;
+    }
+    if (estado_final == SIMB_NAO_IDENTIFICADO){
+        snprintf(mensagem, sizeof(mensagem), "Erro Léxico na linha %d: Caractere inválido (%s)", *cont_linha, *token_atual);
+        return mensagem;
+    }
+    if (estado_final == ERRO_ATRIB_MAL_FORMADO){
+        snprintf(mensagem, sizeof(mensagem), "Erro Léxico na linha %d: Atribuição mal formada (%s), esperado (:=)", *cont_linha, *token_atual);
+        return mensagem;
+    }
+    if (estado_final == ERRO_NUMERO_MAL_FORMADO){
+        snprintf(mensagem, sizeof(mensagem), "Erro Léxico na linha %d: Número inteiro mal formado (%s)", *cont_linha, *token_atual);
+        return mensagem;
+    }
+
+    return NULL; //Sem erros na tokerização
 }
 
 //-------------------- Tabela Hash ---------------
