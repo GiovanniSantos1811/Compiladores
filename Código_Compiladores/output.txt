@@ -1,1 +1,3 @@
-Erro Léxico na linha 2: Comentário mal formado ({comentario.)
+Erro sintático na linha 1: ausência de ',' separando as constantes
+Erro sintático na linha 1: identificador esperado, mas recebeu-se -
+Erro sintático na linha 1: símbolo '=' esperado

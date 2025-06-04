@@ -348,22 +348,18 @@ char *obtem_token_e_erro(char *char_lido, FILE *programa, char **classe, char **
     //Vericando se o estado final atingido corresponde a um erro e gerando o log do erro léxico
     static char mensagem[256];
     if (estado_final == ERRO_COMENT_MAL_FORMADO){
-        printf("Oi");
         snprintf(mensagem, sizeof(mensagem), "Erro Léxico na linha %d: Comentário mal formado (%s)", *cont_linha, *token_atual);
         return mensagem;
     }
     if (estado_final == SIMB_NAO_IDENTIFICADO){
-        printf("Oi2");
         snprintf(mensagem, sizeof(mensagem), "Erro Léxico na linha %d: Caractere inválido (%s)", *cont_linha, *token_atual);
         return mensagem;
     }
     if (estado_final == ERRO_ATRIB_MAL_FORMADO){
-        printf("Oi3");
         snprintf(mensagem, sizeof(mensagem), "Erro Léxico na linha %d: Atribuição mal formada (%s), esperado (:=)", *cont_linha, *token_atual);
         return mensagem;
     }
     if (estado_final == ERRO_NUMERO_MAL_FORMADO){
-        printf("Oi4");
         snprintf(mensagem, sizeof(mensagem), "Erro Léxico na linha %d: Número inteiro mal formado (%s)", *cont_linha, *token_atual);
         return mensagem;
     }

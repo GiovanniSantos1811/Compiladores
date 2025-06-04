@@ -1,2 +1,1 @@
-CONST f = 12;
-VAR x; {comentario.
+CONST x = 12, y = 12;. 
