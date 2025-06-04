@@ -1,3 +1,2 @@
-PROCEDURE fatorial;
-CONST X = 12, Y = 13;
-VAR real dolla;.
+CONST f = 12;
+VAR x; {comentario.

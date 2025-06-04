@@ -9,7 +9,7 @@ int main() {
     //------------- Análise Sintática chamando a Análise Léxica e mostrando os erros sintáticos e léxicos ----------------------
     preenche_hash();
     
-    leitura_arquivo_lexico("fatorialcomprocedimento.txt");
+    leitura_arquivo_sintatico("teste.txt");
     
     return 0;
 }

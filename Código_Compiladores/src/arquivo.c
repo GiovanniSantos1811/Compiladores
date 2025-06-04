@@ -56,8 +56,10 @@ int leitura_arquivo_lexico(const char *nome_arquivo){ //Função que realiza a i
 
 //------------------------------ Sintático -----------------------------------
 void saida_sintatico(FILE *arquivo, char *msg){
-    fputs(msg, arquivo);
-    fputs("\n", arquivo);
+    if (msg != NULL){
+        fputs(msg, arquivo);
+        fputs("\n", arquivo);
+    }
 }
 
 int leitura_arquivo_sintatico(const char *nome_arquivo){
@@ -78,7 +80,7 @@ int leitura_arquivo_sintatico(const char *nome_arquivo){
         return -1;
     }
 
-    ASD(programa); //Fazendo a análise sintática descendente preditiva recursiva 
+    ASD(programa, output); //Fazendo a análise sintática descendente preditiva recursiva 
 
     fclose(output);
     fclose(programa);
