@@ -1,2 +1,3 @@
 Erro Léxico na linha 1: Caractere inválido (@)
-Erro sintático na linha 1: símbolo '=' esperado
+Erro sintático na linha 1: símbolo estranho no contexto (@) ...
+...Continuando a análise sintática na linha 1 e no símbolo x

@@ -55,11 +55,13 @@ int leitura_arquivo_lexico(const char *nome_arquivo){ //Função que realiza a i
 }
 
 //------------------------------ Sintático -----------------------------------
-void saida_sintatico(FILE *arquivo, char *msg){
+int saida_sintatico(FILE *arquivo, char *msg){
     if (msg != NULL){
         fputs(msg, arquivo);
         fputs("\n", arquivo);
+        return 1; //Indica que houve algum erro
     }
+    return 0;
 }
 
 int leitura_arquivo_sintatico(const char *nome_arquivo){

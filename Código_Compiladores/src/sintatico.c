@@ -6,7 +6,7 @@
 #include "arquivo.h"
 #include <stdbool.h>
 
-//Primeiros e Seguidores (Importante ressaltar que "" está sendo usado como caractere sentinela, sendo, nesse caso, o lambda não mapeado aqui)
+//Primeiros e Seguidores (Importante ressaltar que "" está sendo usado como caractere sentinela, assim, nesse caso, o lambda não está mapeado aqui)
 char *PRIMEIRO_PROGRAMA[4] = {"CONST", "VAR", "PROCEDURE", ""};
 char *PRIMEIRO_CONSTANTE[2] = {"CONST", ""};
 char *PRIMEIRO_MAIS_CONST[2] = {"SIMB_VIRGULA", ""};
@@ -17,7 +17,12 @@ char *PRIMEIRO_COMANDO[6] = {"TK_ID", "CALL", "BEGIN", "IF", "WHILE", ""};
 char *PRIMEIRO_MAIS_CMD[2] = {"SIMB_PONT_VIRG", ""};
 char *PRIMEIRO_EXPRESSAO[6] = {"SIMB_SUB", "SIMB_SOMA", "TK_ID", "TK_NUM_INT", "SIMB_ABRE_P", ""};
 char *PRIMEIRO_OPERADOR_UNARIO[3] = {"SIMB_SUB", "SIMB_SOMA", ""};
+char *PRIMEIRO_TERMO[4] = {"TK_ID", "TK_NUM_INT", "SIMB_ABRE_P", ""};
+char *PRIMEIRO_MAIS_TERMOS[3] = {"SIMB_SUB", "SIMB_SOMA", ""};
 char *PRIMEIRO_FATOR[4] = {"TK_ID", "TK_NUM_INT", "SIMB_ABRE_P", ""};
+char *PRIMEIRO_MAIS_FATORES[3] = {"SIMB_MULTIPLIC", "SIMB_DIV", ""};
+char *PRIMEIRO_CONDICAO[4] = {"ODD", "SIMB_SUB", "SIMB_SOMA", ""};
+char *PRIMEIRO_RELACIONAL[7] = {"SIMB_IGUAL_IGUAL", "SIMB_MENOR_MAIOR", "SIMB_MENOR", "SIMB_MENOR_IGUAL", "SIMB_MAIOR", "SIMB_MAIOR_IGUAL", ""};
 
 char *SEGUIDOR_PROGRAMA[1] = {""};
 char *SEGUIDOR_BLOCO[3] = {"SIMB_PONTO", "SIMB_PONT_VIRG", ""};
@@ -25,19 +30,25 @@ char *SEGUIDOR_DECLARACAO[8] = {"TK_ID", "CALL", "BEGIN", "IF", "WHILE", "SIMB_P
 char *SEGUIDOR_CONSTANTE[10] = {"VAR", "PROCEDURE", "TK_ID", "CALL", "BEGIN", "IF", "WHILE", "SIMB_PONTO", "SIMB_PONT_VIRG", ""};
 char *SEGUIDOR_MAIS_CONST[2] = {"SIMB_PONT_VIRG", ""};
 char *SEGUIDOR_VARIAVEL[7] = {"PROCEDURE", "TK_ID", "CALL", "BEGIN", "IF", "WHILE", ""};
-
 char *SEGUIDOR_MAIS_VAR[2] = {"SIMB_PONT_VIRG", ""};
 char *SEGUIDOR_PROCEDIMENTO[8] = {"TK_ID", "CALL", "BEGIN", "IF", "WHILE", "SIMB_PONTO", "SIMB_PONT_VIRG", ""};
 char *SEGUIDOR_COMANDO[4] = {"SIMB_PONTO", "SIMB_PONT_VIRG", "END", ""};
 char *SEGUIDOR_MAIS_CMD[2] = {"END", ""};
 char *SEGUIDOR_EXPRESSAO[12] = {"SIMB_PONTO", "SIMB_PONT_VIRG", "SIMB_FECHA_P", "THEN", "DO", "TK_ATRIBUICAO", "SIMB_MENOR_MAIOR", "SIMB_MENOR", "SIMB_MENOR_IGUAL", "SIMB_MAIOR", "SIMB_MAIOR_IGUAL", ""};
 char *SEGUIDOR_OPERADOR_UNARIO[4] = {"TK_ID", "TK_NUM_INT", "SIMB_ABRE_P", ""};
+char *SEGUIDOR_TERMO[14] = {"SIMB_SUB", "SIMB_SOMA", "SIMB_PONTO", "SIMB_PONT_VIRG", "SIMB_FECHA_P", "THEN", "DO", "SIMB_IGUAL_IGUAL", "SIMB_MENOR_MAIOR", "SIMB_MENOR", "SIMB_MENOR_IGUAL", "SIMB_MAIOR", "SIMB_MAIOR_IGUAL", ""};
+char *SEGUIDOR_MAIS_TERMOS[12] = {"SIMB_PONTO", "SIMB_PONT_VIRG", "SIMB_FECHA_P", "THEN", "DO", "SIMB_IGUAL_IGUAL", "SIMB_MENOR_MAIOR", "SIMB_MENOR", "SIMB_MENOR_IGUAL", "SIMB_MAIOR", "SIMB_MAIOR_IGUAL", ""};
+char *SEGUIDOR_FATOR[16] = {"SIMB_MULTIPLIC", "SIMB_DIV", "SIMB_SUB", "SIMB_SOMA", "SIMB_PONTO", "SIMB_PONT_VIRG", "SIMB_FECHA_P", "THEN", "DO", "SIMB_IGUAL_IGUAL", "SIMB_MENOR_MAIOR", "SIMB_MENOR", "SIMB_MENOR_IGUAL", "SIMB_MAIOR", "SIMB_MAIOR_IGUAL", ""};
+char *SEGUIDOR_MAIS_FATORES[14] = {"SIMB_SUB", "SIMB_SOMA", "SIMB_PONTO", "SIMB_PONT_VIRG", "SIMB_FECHA_P", "THEN", "DO", "SIMB_IGUAL_IGUAL", "SIMB_MENOR_MAIOR", "SIMB_MENOR", "SIMB_MENOR_IGUAL", "SIMB_MAIOR", "SIMB_MAIOR_IGUAL", ""};
+char *SEGUIDOR_CONDICAO[3] = {"THEN", "DO", ""};
+char *SEGUIDOR_RELACIONAL[6] = {"SIMB_SUB", "SIMB_SOMA", "TK_ID", "TK_NUM_INT", "SIMB_ABRE_P", ""};
 
 //------------------ Variáveis globais ----------------------
 int cont_linha = 1; //armazena a linha atual que está sendo lida do programa
-static char mensagem[256]; //armazena as msgs de erro
+char mensagem1[256], mensagem2[256]; //armazena as msgs de erro
 //Análise léxica
 char char_lido, *classe, *token_atual;
+char *ERROS_LEXICOS[5] = {"ERRO_NUMERO_MAL_FORMADO", "ERRO_ATRIB_MAL_FORMADO", "SIMB_NAO_IDENTIFICADO", "ERRO_COMENT_MAL_FORMADO", ""};
 
 //------------------ Funções auxiliares ------------------
 bool pertence(char *classe, char *conj[]) {
@@ -76,15 +87,40 @@ char **uniao(char **conj1, char **conj2) {
 
 void erro(FILE *programa, FILE *output, char **S){ //Implementação do Modo Pânico
     while (!pertence(classe, S)){
+        printf("Modo pânico / ");
         saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
-        printf("classe: %s\n", classe);
         if (char_lido == EOF)
             break;
     }
 }
 
-int leitura_sintatica(){ //Função para modularização do código de tratamento de erros sintáticos/léxicos
-    return 0;
+int leitura_sintatica(FILE *programa, FILE *output, char *classe_goal, char *erro1, char *erro2, char *seg_loc[], char *seg_pai[]){ //Função para modularização do código de tratamento de erros sintáticos/léxicos
+    printf("Objetivo: %s / Entra: %s / ", classe_goal, classe);
+    if (pertence(classe, ERROS_LEXICOS)){ //Não misturar erros léxicos com sintáticos
+        saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
+        printf("Sai1: %s\n", classe);
+        return 0; //Continua com a execução do procedimento que chamou essa função
+    }
+    if (!strcmp(classe, classe_goal)){
+        saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
+        printf("Sai2: %s\n", classe);
+        return 0; //Continua com a execução do procedimento que chamou essa função
+    }
+    else{ //ERRO
+        char msg_ini[256];
+        snprintf(msg_ini, sizeof(msg_ini), "Erro sintático na linha %d: %s", cont_linha, erro1);
+        saida_sintatico(output, msg_ini); //Escrevendo a msg de erro no arquivo de saída
+
+        erro(programa, output, uniao(seg_loc, seg_pai)); //Fazendo união do seguidor local com o seguidor do pai
+        if (pertence(classe, SEGUIDOR_CONSTANTE)){ //Consumiu o procedimento inteiro
+            snprintf(msg_ini, sizeof(msg_ini), "Erro sintático na linha %d: %s", cont_linha, erro2);
+            saida_sintatico(output, msg_ini); //Escrevendo a msg de erro no arquivo de saída
+            printf("Consumiu Procedimento / Sai3: %s\n", classe);
+            return 1; //Interrompendo o procedimento que chamou essa função
+        }
+        printf("Sai4: %s\n", classe);
+        return 0; //Continua com a execução do procedimento que chamou essa função
+    }
 }
 
 //------------------ Implementação dos procedimentos sintáticos ------------------
@@ -112,11 +148,10 @@ void ASD(FILE *programa, FILE *output){
 void Programa(FILE *programa, FILE *output){
     // Esta função chama constante, variavel, procedimento e comando
     Constante(programa, output);
-    /*Variavel(programa, output);
-    Procedimento(programa, output);
+    Variavel(programa, output);
+    /*Procedimento(programa, output);
     Comando(programa, output);*/
 
-    saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
     if(!strcmp(classe, "SIMB_PONTO")) { // Tudo certo, finaliza o programa
         // Precisamos tratar dos erros que ocorrem se eu colocar . finalizando o programa
         //mas continuar escrevendo alguma coisa 
@@ -132,88 +167,103 @@ void Programa(FILE *programa, FILE *output){
 
 
 void Constante(FILE *programa, FILE *output){
+    char *seguidor_local[10];
     if (!strcmp(classe, "CONST")){
         saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
         while (1){
-            if (!strcmp(classe, "TK_ID")){
-                saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
-            }
-            else{ //ERRO
-                snprintf(mensagem, sizeof(mensagem), "Erro sintático na linha %d: identificador esperado, mas recebeu-se %s", cont_linha, token_atual);
-                saida_sintatico(output, mensagem); //Escrevendo a msg de erro no arquivo de saída
+            // Identificação ident
+            //Preparando possíveis msgs de erro sintático
+            snprintf(mensagem1, sizeof(mensagem1), "identificador esperado, mas recebeu-se %s", token_atual);
+            snprintf(mensagem2, sizeof(mensagem2), "símbolo '=' esperado");
+            //Organizando seguidor(es) local(is)
+            seguidor_local[0] = "SIMB_IGUAL_IGUAL";
+            seguidor_local[1] = "";
+            //Fazendo a identificação e verificando erros - aplicando modo pânico caso necessário
+            if (leitura_sintatica(programa, output, "TK_ID", mensagem1, mensagem2, seguidor_local, SEGUIDOR_CONSTANTE))
+                return; //Modo pânico consumiu o procedimento inteiro
 
-                char *seguidor_local[2] = {"SIMB_IGUAL_IGUAL", ""};
-                erro(programa, output, uniao(seguidor_local, SEGUIDOR_CONSTANTE)); //Fazendo união do seguidor local com o seguidor do pai
-                if (pertence(classe, SEGUIDOR_CONSTANTE)){ //Consumiu o procedimento inteiro
-                    snprintf(mensagem, sizeof(mensagem), "Erro sintático na linha %d: símbolo '=' esperado", cont_linha);
-                    saida_sintatico(output, mensagem); //Escrevendo a msg de erro no arquivo de saída
-                    return; //Interrompendo o procedimento
-                }
-            }
             
-            if (!strcmp(classe, "SIMB_IGUAL_IGUAL")){
-                saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
-            }
-            else{ //ERRO
-                snprintf(mensagem, sizeof(mensagem), "Erro sintático na linha %d: símbolo '=' esperado", cont_linha);
-                saida_sintatico(output, mensagem); //Escrevendo a msg de erro no arquivo de saída
-
-                char *seguidor_local[2] = {"TK_NUM_INT", ""};
-                erro(programa, output, uniao(seguidor_local, SEGUIDOR_CONSTANTE));
-                if (pertence(classe, SEGUIDOR_CONSTANTE)){ //Consumiu o procedimento inteiro
-                    snprintf(mensagem, sizeof(mensagem), "Erro sintático na linha %d: número inteiro esperado, recebeu-se %s", cont_linha, token_atual);
-                    saida_sintatico(output, mensagem); //Escrevendo a msg de erro no arquivo de saída
-                    return; //Interrompendo o procedimento
-                }
-            }
-
-            if (!strcmp(classe, "TK_NUM_INT")){
-                saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));   
-            }
-            else{ //ERRO
-                snprintf(mensagem, sizeof(mensagem), "Erro sintático na linha %d: número inteiro esperado, recebeu-se %s no lugar", cont_linha, token_atual);
-                saida_sintatico(output, mensagem); //Escrevendo a msg de erro no arquivo de saída
-                
-                char *seguidor_local[4] = {"SIMB_VIRGULA", "SIMB_PONT_VIRG", "TK_ID", ""};
-                erro(programa, output, uniao(seguidor_local, SEGUIDOR_CONSTANTE)); //Adição artificial de TK_ID commo seguidor local, para permitir a identificação da ausência de vírgula
-                if (pertence(classe, SEGUIDOR_CONSTANTE)){ //Consumiu o procedimento inteiro
-                    snprintf(mensagem, sizeof(mensagem), "Erro sintático na linha %d: símbolo ';' esperado", cont_linha);
-                    saida_sintatico(output, mensagem); //Escrevendo a msg de erro no arquivo de saída
-                    return; //Interrompendo o procedimento
-                }
-            }
+            // Identificação '='
+            snprintf(mensagem1, sizeof(mensagem1), "símbolo '=' esperado entre a constante e o número");
+            snprintf(mensagem2, sizeof(mensagem2), "número inteiro esperado, recebeu-se %s", token_atual);
+            seguidor_local[0] = "TK_NUM_INT";
+            seguidor_local[1] = "";
+            if (leitura_sintatica(programa, output, "SIMB_IGUAL_IGUAL", mensagem1, mensagem2, seguidor_local, SEGUIDOR_CONSTANTE))
+                return; //Modo pânico consumiu o procedimento inteiro
             
-            //Chegou aqui - último token lido foi uma vírgula, um ponto e vírgula ou um identificador
+            // Identificação número inteiro
+            snprintf(mensagem1, sizeof(mensagem1), "número inteiro esperado, recebeu-se %s no lugar", token_atual);
+            snprintf(mensagem2, sizeof(mensagem2), "símbolo ';' esperado");
+            seguidor_local[0] = "SIMB_VIRGULA";
+            seguidor_local[1] = "SIMB_PONT_VIRG";
+            seguidor_local[2] = "TK_ID"; //Adição artificial de TK_ID como seguidor para possibilitar a identificação de ausência de vírgula
+            seguidor_local[3] = "";
+            if (leitura_sintatica(programa, output, "TK_NUM_INT", mensagem1, mensagem2, seguidor_local, SEGUIDOR_CONSTANTE))
+                return; //Modo pânico consumiu o procedimento inteiro
+
+            //Caso não achou número e chegou aqui - token é virgula, ponto e vírgula ou ident // Caso achou - token é vírgula ou ponto e vírgula, se não for é caractere estranho
             if (!strcmp(classe, "SIMB_PONT_VIRG")){ // Sai do ciclo e encerra o procedimento
                 printf("Constante Sucesso!\n");
                 saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
                 return;
             }
-            if (!strcmp(classe, "SIMB_VIRGULA")){ // Lê uma virgula, então consome o próximo token e continua no loop
-                saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
+            if(!strcmp(classe, "TK_ID")){ //ERRO - leu ident mesmo não tendo vírgula nenhuma
+                snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: ausência de ',' separando as constantes", cont_linha);
+                saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
             }
-            else{ // ERRO - Leu um ident sem vírgula antes
-                snprintf(mensagem, sizeof(mensagem), "Erro sintático na linha %d: ausência de ',' separando as constantes", cont_linha);
-                saida_sintatico(output, mensagem); //Escrevendo a msg de erro no arquivo de saída
+            else if (!strcmp(classe, "SIMB_VIRGULA")){ //Leu a vírgula, continua com a análise de CONSTANTE
+                saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
+            } 
+            else{ //ERRO - leu um símbolo estranho que não é a vírgula
+                snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: símbolo estranho no contexto (%s) ...", cont_linha, token_atual);
+                saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
+                
+                erro(programa, output, SEGUIDOR_CONSTANTE); //Modo pânico consumindo o procedimento inteiro
+                printf("\nFinar: %s\n", classe);
+                if (char_lido != EOF){
+                    snprintf(mensagem1, sizeof(mensagem1), "...Continuando a análise sintática na linha %d e no símbolo %s", cont_linha, token_atual);
+                    saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
+                }
+
             }
         }
     }
 }
 
 void Variavel(FILE *programa, FILE *output){
+    char *seguidor_local[10];
     if (!strcmp(classe, "VAR")){
+        if (saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha)))
+            saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha)); //erro léxico - consome o próximo
         while (1){
-            saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
-            if (!strcmp(classe, "TK_ID")){
-                saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
-                if (strcmp(classe, "SIMB_VIRGULA")){ //Caso seja diferente de SIMB_VIRGULA, sai do loop e vai buscar o ;
-                    break;
-                }
+            // Identificação ident
+            //Preparando possíveis msgs de erro sintático
+            snprintf(mensagem1, sizeof(mensagem1), "identificador esperado, mas recebeu-se %s", token_atual);
+            snprintf(mensagem2, sizeof(mensagem2), "símbolo '=' esperado");
+            //Organizando seguidor(es) local(is)
+            seguidor_local[0] = "SIMB_VIRGULA";
+            seguidor_local[1] = "SIMB_PONT_VIRG";
+            seguidor_local[2] = "TK_ID"; //Adição artificial
+            seguidor_local[3] = "";
+            //Fazendo a identificação e verificando erros - aplicando modo pânico caso necessário
+            if (leitura_sintatica(programa, output, "TK_ID", mensagem1, mensagem2, seguidor_local, SEGUIDOR_CONSTANTE))
+                return; //Modo pânico consumiu o procedimento inteiro
+
+            //Chegou aqui - último token lido foi uma vírgula, um ponto e vírgula ou um identificador
+            if (!strcmp(classe, "SIMB_PONT_VIRG")){ // Sai do ciclo e encerra o procedimento
+                printf("Variável Sucesso!\n");
+                if (saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha)))
+                    saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha)); //erro léxico - consome o próximo
+                return;
             }
-        }
-        if (!strcmp(classe, "SIMB_PONT_VIRG")){
-            printf("Variável Sucesso!\n");
-            saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
+            if (!strcmp(classe, "SIMB_VIRGULA")){ // Lê uma virgula, então consome o próximo token e continua no loop
+                if (saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha)))
+                    saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha)); //erro léxico - consome o próximo
+            }
+            else{ // ERRO - Leu um ident sem vírgula antes
+                snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: ausência de ',' separando as variáveis", cont_linha);
+                saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
+            }
         }
     }
 }

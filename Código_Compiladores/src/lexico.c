@@ -302,8 +302,8 @@ int identifica_token(char *char_lido, FILE *programa, char **classe, char **toke
         }
         else { //Estado final
             if (cont > 0){ //Chegou em um estado final passando por pelo menos um estado intermediário
-                //Análise dos tokens que são símbolos
-                if ((token[0] == ':' && *char_lido == '=') || token[0] == '{' || (token[0] == '>' && *char_lido == '=') || (token[0] == '<' && (*char_lido == '>' || *char_lido == '='))){ 
+                //Análise dos tokens que são símbolos + erro de formação de número
+                if ((token[0] == ':' && *char_lido == '=') || token[0] == '{' || (token[0] == '>' && *char_lido == '=') || (token[0] == '<' && (*char_lido == '>' || *char_lido == '=')) || estado_atual == -1){ 
                     token[cont++] = *char_lido;
                     if (*char_lido == '\n') //Atualizando a linha atual
                         (*cont_linha)++;
@@ -335,7 +335,7 @@ int identifica_token(char *char_lido, FILE *programa, char **classe, char **toke
 
             //Como chegou em um estado final, a identificação desse token está completa
             strcpy(*token_atual, token); //Passando o token atual por referência
-            
+            //printf("Token: %s, Classe: %s\n", *token_atual, *classe);
             break; //Parando a identificação
         }
     }
