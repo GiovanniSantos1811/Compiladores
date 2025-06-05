@@ -3,14 +3,14 @@
 
 //Procedimentos Sintáticos
 void ASD(FILE *programa, FILE *output); //Inicia a análise sintática descendente preditiva recursiva
-void Programa(char *char_lido, FILE *programa, FILE *output, char **classe, char **token_atual);
-void Constante(char *char_lido, FILE *programa, FILE *output, char **classe, char **token_atual);
-void Variavel(char *char_lido, FILE *programa, FILE *output, char **classe, char **token_atual);
-void Procedimento(char *char_lido, FILE *programa, FILE *output, char **classe, char **token_atual);
-void Comando(char *char_lido, FILE *programa, FILE *output, char **classe, char **token_atual);
-void Expressao(char *char_lido, FILE *programa, FILE *output, char **classe, char **token_atual);
-void Fator(char *char_lido, FILE *programa, FILE *output, char **classe, char **token_atual);
-void Mais_Fator(char *char_lido, FILE *programa, FILE *output, char **classe, char **token_atual);
-void Condicao(char *char_lido, FILE *programa, FILE *output, char **classe, char **token_atual);
+void Programa(FILE *programa, FILE *output);
+void Constante(FILE *programa, FILE *output);
+void Variavel(FILE *programa, FILE *output);
+void Procedimento(FILE *programa, FILE *output);
+void Comando(FILE *programa, FILE *output);
+void Expressao(FILE *programa, FILE *output);
+void Fator(FILE *programa, FILE *output);
+void Mais_Fator(FILE *programa, FILE *output);
+void Condicao(FILE *programa, FILE *output);
 
 #endif
