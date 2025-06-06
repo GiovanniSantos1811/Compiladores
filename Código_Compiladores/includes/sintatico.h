@@ -9,7 +9,7 @@ void Variavel(FILE *programa, FILE *output);
 void Procedimento(FILE *programa, FILE *output);
 void Comando(FILE *programa, FILE *output);
 void Expressao(FILE *programa, FILE *output);
-void Fator(FILE *programa, FILE *output);
+int Fator(FILE *programa, FILE *output);
 void Mais_Fator(FILE *programa, FILE *output);
 void Condicao(FILE *programa, FILE *output);
 
