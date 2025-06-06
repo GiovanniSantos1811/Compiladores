@@ -106,7 +106,7 @@ void copiar_strings_deep(char **destino, char **origem) {
 
 int erro(FILE *programa, FILE *output, char **S){ //Implementação do Modo Pânico
     while (!pertence(classe, S)){
-        printf("Modo pânico %s/ ", classe);
+        //printf("Modo pânico %s/ ", classe);
         obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha);
         if (char_lido == EOF || !strcmp(classe, "SIMB_PONTO"))
             return 1; //Chegou ao fim do arquivo
@@ -117,15 +117,15 @@ int erro(FILE *programa, FILE *output, char **S){ //Implementação do Modo Pân
 }
 
 int leitura_sintatica(FILE *programa, FILE *output, char *classe_goal, char *erro1, char *erro2, char *seg_loc[], char *seg_modo[]){ //Função para modularização do código de tratamento de erros sintáticos/léxicos
-    printf("Objetivo: %s / Entra: %s / ", classe_goal, classe);
+    //printf("Objetivo: %s / Entra: %s / ", classe_goal, classe);
     if (pertence(classe, ERROS_LEXICOS)){ //Não misturar erros léxicos com sintáticos
         saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
-        printf("Sai1: %s\n", classe);
+        //printf("Sai1: %s\n", classe);
         return 0; //Continua com a execução do procedimento que chamou essa função
     }
     if (!strcmp(classe, classe_goal)){
         saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
-        printf("Sai2: %s\n", classe);
+        //printf("Sai2: %s\n", classe);
         return 0; //Continua com a execução do procedimento que chamou essa função
     }
     else{ //ERRO
@@ -139,10 +139,10 @@ int leitura_sintatica(FILE *programa, FILE *output, char *classe_goal, char *err
                 snprintf(msg_ini, sizeof(msg_ini), "Erro sintático na linha %d: %s", cont_linha, erro2);
                 saida_sintatico(output, msg_ini); //Escrevendo a msg de erro no arquivo de saída
             }
-            printf("Consumiu Procedimento / Sai3: %s\n", classe);
+            //printf("Consumiu Procedimento / Sai3: %s\n", classe);
             return 1; //Interrompendo o procedimento que chamou essa função
         }
-        printf("Sai4: %s\n", classe);
+        //printf("Sai4: %s\n", classe);
         return 0; //Continua com a execução do procedimento que chamou essa função
     }
 }
@@ -158,10 +158,10 @@ void ASD(FILE *programa, FILE *output){
     Programa(programa, output);
 
     if (char_lido != EOF){
-        printf("Erro - não chegou ao fim de arquivo\n");
+        //printf("Erro - não chegou ao fim de arquivo\n");
     } 
     else{
-        printf("Sucesso - EOF identificado\n");
+        //printf("Sucesso - EOF identificado\n");
     }
 
     // Desalocação da memória alocada 
@@ -181,9 +181,9 @@ void Programa(FILE *programa, FILE *output){
         saida_sintatico(output, mensagem1);
     }
     //Tratamento de erros cometidos após a utilização do '.'
-    printf("\nCLASSE 1: %s, mensagem: %s\n", classe, mensagem1);
+    //printf("\nCLASSE 1: %s, mensagem: %s\n", classe, mensagem1);
     obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha);
-    printf("\nCLASSE 2: %s\n", classe);
+    //printf("\nCLASSE 2: %s\n", classe);
     if (!strcmp(classe, "ERRO_COMENT_MAL_FORMADO")){
         snprintf(mensagem1, sizeof(mensagem1), "Erro Léxico na linha %d: Comentário mal formado (%s)", cont_linha, token_atual);
         saida_sintatico(output, mensagem1);
@@ -236,7 +236,7 @@ void Constante(FILE *programa, FILE *output){
 
             //Caso não achou número e chegou aqui - token é virgula, ponto e vírgula ou ident // Caso achou - token é vírgula ou ponto e vírgula, se não for é caractere estranho
             if (!strcmp(classe, "SIMB_PONT_VIRG")){ // Sai do ciclo e encerra o procedimento
-                printf("Constante Sucesso!\n");
+                //printf("Constante Sucesso!\n");
                 saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
                 return;
             }
@@ -255,7 +255,7 @@ void Constante(FILE *programa, FILE *output){
                 
                 if (erro(programa, output, SEGUIDOR_CONSTANTE)) //Modo pânico consumindo o procedimento inteiro
                     return; //Chegou no fim do arquivo
-                printf("\nFinar: %s\n", classe);
+                //printf("\nFinar: %s\n", classe);
                 if (char_lido != EOF){
                     snprintf(mensagem1, sizeof(mensagem1), "...Continuando a análise sintática na linha %d e no símbolo %s", cont_linha, token_atual);
                     saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
@@ -285,7 +285,7 @@ void Variavel(FILE *programa, FILE *output){
 
             //Chegou aqui - último token lido foi uma vírgula, um ponto e vírgula ou um identificador
             if (!strcmp(classe, "SIMB_PONT_VIRG")){ // Sai do ciclo e encerra o procedimento
-                printf("Constante Sucesso!\n");
+                //printf("Constante Sucesso!\n");
                 saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
                 return;
             }
@@ -304,7 +304,7 @@ void Variavel(FILE *programa, FILE *output){
 
                 if (erro(programa, output, SEGUIDOR_VARIAVEL)) //Modo pânico consumindo o procedimento inteiro
                     return; //Chegou no fim do arquivo
-                printf("\nFinar: %s\n", classe);
+                //printf("\nFinar: %s\n", classe);
                 if (char_lido != EOF){
                     snprintf(mensagem1, sizeof(mensagem1), "...Continuando a análise sintática na linha %d e no símbolo %s", cont_linha, token_atual);
                     saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
@@ -350,7 +350,7 @@ void Procedimento(FILE *programa, FILE *output){
         seguidor_local[0] = ""; //Sem seguidor_local, já que é o último token do procedimento
         if (leitura_sintatica(programa, output, "SIMB_PONT_VIRG", mensagem1, mensagem2, seguidor_local, SEGUIDOR_PROCEDIMENTO))
             return; //Modo pânico consumiu o procedimento inteiro
-        printf("Procedimento Sucesso!\n");
+        //printf("Procedimento Sucesso!\n");
     }
 }
 
@@ -369,7 +369,7 @@ void Comando(FILE *programa, FILE *output){
         //Chamando Expressao
         Expressao(programa, output, 0);
 
-        printf("Comando Sucesso! - Atribuição\n");
+        //printf("Comando Sucesso! - Atribuição\n");
     }
     else if (!strcmp(classe, "CALL")){
         saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
@@ -381,7 +381,7 @@ void Comando(FILE *programa, FILE *output){
         if (leitura_sintatica(programa, output, "TK_ID", mensagem1, mensagem2, seguidor_local, SEGUIDOR_COMANDO))
             return; //Modo pânico consumiu o procedimento inteiro
 
-        printf("Comando Sucesso! - CALL Procedure\n");
+        //printf("Comando Sucesso! - CALL Procedure\n");
     }
     else if (!strcmp(classe, "BEGIN")){
         saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
@@ -390,7 +390,7 @@ void Comando(FILE *programa, FILE *output){
             
             //Chegou aqui - último token lido foi um ponto e vírgula, um END ou um primeiro de comando
             if (!strcmp(classe, "END")){ // Sai do ciclo e encerra o procedimento
-                printf("Comando Sucesso! - BEGIN ... END\n");
+                //printf("Comando Sucesso! - BEGIN ... END\n");
                 saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
                 return;
             }
@@ -409,7 +409,7 @@ void Comando(FILE *programa, FILE *output){
 
                 if (erro(programa, output, SEGUIDOR_COMANDO)) //Modo pânico consumindo o procedimento inteiro
                     return; //Chegou no fim do arquivo
-                printf("\nFinar: %s\n", classe);
+                //printf("\nFinar: %s\n", classe);
                 if (char_lido != EOF){
                     snprintf(mensagem1, sizeof(mensagem1), "...Continuando a análise sintática na linha %d e no símbolo %s", cont_linha, token_atual);
                     saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
@@ -432,7 +432,7 @@ void Comando(FILE *programa, FILE *output){
         //Chamando Comando
         Comando(programa, output);
 
-        printf("Comando Sucesso! - IF\n");
+        //printf("Comando Sucesso! - IF\n");
     }
     else if (!strcmp(classe, "WHILE")){
         saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
@@ -448,7 +448,7 @@ void Comando(FILE *programa, FILE *output){
         //Chamando Comando
         Comando(programa, output);
 
-        printf("Comando Sucesso! - WHILE\n");
+        //printf("Comando Sucesso! - WHILE\n");
     }
 }
 
@@ -486,7 +486,7 @@ void Expressao(FILE *programa, FILE *output, int modo){ //modo indica o modo que
                 cont_linha = cont_linha_atual;
             }
             
-            printf("Expressao Sucesso!\n");
+            //printf("Expressao Sucesso!\n");
             return;
         }
         if(pertence(classe, PRIMEIRO_FATOR)){ //ERRO - leu algum primeiro de fator mesmo não tendo nenhum operador na separação
@@ -506,7 +506,7 @@ void Expressao(FILE *programa, FILE *output, int modo){ //modo indica o modo que
 
             if (erro(programa, output, SEGUIDOR_EXPRESSAO)) //Modo pânico consumindo o procedimento inteiro
                 return; //Chegou no fim do arquivo
-            printf("\nFinar: %s\n", classe);
+            //printf("\nFinar: %s\n", classe);
             if (char_lido != EOF){
                 snprintf(mensagem1, sizeof(mensagem1), "...Continuando a análise sintática na linha %d e no símbolo %s", cont_linha, token_atual);
                 saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
@@ -518,12 +518,12 @@ void Expressao(FILE *programa, FILE *output, int modo){ //modo indica o modo que
 int Fator(FILE *programa, FILE *output, int modo){
     char *seguidor_local[20];
     if (!strcmp(classe, "TK_ID")){
-        printf("Fator Sucesso! - ident\n");
+        //printf("Fator Sucesso! - ident\n");
         saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
         return 0;
     }
     else if (!strcmp(classe, "TK_NUM_INT")){
-        printf("Fator Sucesso! - numero\n");
+        //printf("Fator Sucesso! - numero\n");
         saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
         return 0;
     }
@@ -539,7 +539,7 @@ int Fator(FILE *programa, FILE *output, int modo){
         if (leitura_sintatica(programa, output, "SIMB_FECHA_P", mensagem1, mensagem2, seguidor_local, SEGUIDOR_FATOR))
             return 0; //Modo pânico consumiu o procedimento inteiro
 
-        printf("Fator Sucesso! - parenteses\n");
+        //printf("Fator Sucesso! - parenteses\n");
 
         return 0;
     }
@@ -552,14 +552,14 @@ int Fator(FILE *programa, FILE *output, int modo){
 void Mais_Fator(FILE *programa, FILE *output, int modo){
     while (!strcmp(classe, "SIMB_MULTIPLIC") || !strcmp(classe, "SIMB_DIV")){
         saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
-        printf("\nOOOOOOOOOOOOOO\n");
+        //printf("\nOOOOOOOOOOOOOO\n");
         //Chamando Fator
         Fator(programa, output, modo);
-        printf("\nAAAAAAAAAAAAAAAA\n");
+        //printf("\nAAAAAAAAAAAAAAAA\n");
 
         //Tratamento de * e /
         if (pertence(classe, SEGUIDOR_MAIS_FATORES)){ // Sai do ciclo e encerra o procedimento
-            printf("Mais Fatores Sucesso!\n");
+            //printf("Mais Fatores Sucesso!\n");
             //saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
             return;
         }
@@ -575,7 +575,7 @@ void Mais_Fator(FILE *programa, FILE *output, int modo){
 
             if (erro(programa, output, SEGUIDOR_MAIS_FATORES)) //Modo pânico consumindo o procedimento inteiro
                 return; //Chegou no fim do arquivo
-            printf("\nFinar: %s\n", classe);
+            //printf("\nFinar: %s\n", classe);
             if (char_lido != EOF){
                 snprintf(mensagem1, sizeof(mensagem1), "...Continuando a análise sintática na linha %d e no símbolo %s", cont_linha, token_atual);
                 saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
@@ -611,7 +611,7 @@ void Condicao(FILE *programa, FILE *output){
             }
             if (erro(programa, output, SEGUIDOR_CONDICAO)) //Modo pânico consumindo o procedimento inteiro
                 return; //Chegou no fim do arquivo
-            printf("\nFinar: %s\n", classe);
+            //printf("\nFinar: %s\n", classe);
             if (char_lido != EOF){
                 snprintf(mensagem1, sizeof(mensagem1), "...Continuando a análise sintática na linha %d e no símbolo %s", cont_linha, token_atual);
                 saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída

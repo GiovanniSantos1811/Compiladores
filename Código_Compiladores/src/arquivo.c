@@ -14,6 +14,7 @@ void saida_lexico(FILE *arquivo, char *conteudoToken, char *conteudoClass) {
 }
 
 int leitura_arquivo_lexico(const char *nome_arquivo){ //Função que realiza a identificação dos tokens do programa como um todo (fins didáticos apenas)
+
     const char *nome_programa = nome_arquivo;
     const char *nome_output = "output.txt";
     remove(nome_output);
@@ -52,6 +53,8 @@ int leitura_arquivo_lexico(const char *nome_arquivo){ //Função que realiza a i
 
     fclose(output);
     fclose(programa);
+
+    return 0;
 }
 
 //------------------------------ Sintático -----------------------------------
@@ -86,4 +89,6 @@ int leitura_arquivo_sintatico(const char *nome_arquivo){
 
     fclose(output);
     fclose(programa);
+
+    return 0;
 }

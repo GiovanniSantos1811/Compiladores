@@ -6,10 +6,30 @@
 
 
 int main() {
-    //------------- Análise Sintática chamando a Análise Léxica e mostrando os erros sintáticos e léxicos ----------------------
     preenche_hash();
+    char nome_arquivo[256];
+    int opcao, resultado = -1;
+    // Interface com o usuário
+    printf("\n------------------------------------------------------------------------------------\n");
+    printf("Bem vindo ao compilador da linguagem PL/0! Aqui fazemos análise léxica e sintática.\n");
+    printf("\n------------------------------------------------------------------------------------\n");
+    while (resultado == -1){
+        printf("Digite o nome do arquivo que deseja realizar o processo de compilação parcial (incluindo a extensão!): ");
+        scanf("%s", nome_arquivo);
+        printf("Escolha qual análise será feita. Digite 1 para léxica e 2 para sintática: ");
+        scanf("%d", &opcao);
+        if (opcao == 1){
+            resultado = leitura_arquivo_lexico(nome_arquivo);
+        }
+        else if (opcao == 2){
+            resultado = leitura_arquivo_sintatico(nome_arquivo);
+        }
+        else{
+            printf("Digite uma das opçõs descritas!\n");
+        }
+    }
+    printf("\nProcesso de compilação parcial concluída! Resultado está em output.txt\n");
     
-    leitura_arquivo_sintatico("teste.txt");
     
     return 0;
 }
