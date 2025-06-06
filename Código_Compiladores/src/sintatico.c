@@ -39,7 +39,7 @@ char *SEGUIDOR_OPERADOR_UNARIO[4] = {"TK_ID", "TK_NUM_INT", "SIMB_ABRE_P", ""};
 char *SEGUIDOR_TERMO[14] = {"SIMB_SUB", "SIMB_SOMA", "SIMB_PONTO", "SIMB_PONT_VIRG", "SIMB_FECHA_P", "THEN", "DO", "SIMB_IGUAL_IGUAL", "SIMB_MENOR_MAIOR", "SIMB_MENOR", "SIMB_MENOR_IGUAL", "SIMB_MAIOR", "SIMB_MAIOR_IGUAL", ""};
 char *SEGUIDOR_MAIS_TERMOS[12] = {"SIMB_PONTO", "SIMB_PONT_VIRG", "SIMB_FECHA_P", "THEN", "DO", "SIMB_IGUAL_IGUAL", "SIMB_MENOR_MAIOR", "SIMB_MENOR", "SIMB_MENOR_IGUAL", "SIMB_MAIOR", "SIMB_MAIOR_IGUAL", ""};
 char *SEGUIDOR_FATOR[16] = {"SIMB_MULTIPLIC", "SIMB_DIV", "SIMB_SUB", "SIMB_SOMA", "SIMB_PONTO", "SIMB_PONT_VIRG", "SIMB_FECHA_P", "THEN", "DO", "SIMB_IGUAL_IGUAL", "SIMB_MENOR_MAIOR", "SIMB_MENOR", "SIMB_MENOR_IGUAL", "SIMB_MAIOR", "SIMB_MAIOR_IGUAL", ""};
-char *SEGUIDOR_MAIS_FATORES[14] = {"SIMB_SUB", "SIMB_SOMA", "SIMB_PONTO", "SIMB_PONT_VIRG", "SIMB_FECHA_P", "THEN", "DO", "SIMB_IGUAL_IGUAL", "SIMB_MENOR_MAIOR", "SIMB_MENOR", "SIMB_MENOR_IGUAL", "SIMB_MAIOR", "SIMB_MAIOR_IGUAL", ""};
+char *SEGUIDOR_MAIS_FATORES[15] = {"SIMB_SUB", "SIMB_SOMA", "SIMB_PONTO", "SIMB_PONT_VIRG", "SIMB_FECHA_P", "THEN", "DO", "SIMB_IGUAL_IGUAL", "SIMB_MENOR_MAIOR", "SIMB_MENOR", "SIMB_MENOR_IGUAL", "SIMB_MAIOR", "SIMB_MAIOR_IGUAL", "END", ""};
 char *SEGUIDOR_CONDICAO[3] = {"THEN", "DO", ""};
 char *SEGUIDOR_RELACIONAL[6] = {"SIMB_SUB", "SIMB_SOMA", "TK_ID", "TK_NUM_INT", "SIMB_ABRE_P", ""};
 
@@ -104,16 +104,19 @@ void copiar_strings_deep(char **destino, char **origem) {
 }
 
 
-void erro(FILE *programa, FILE *output, char **S){ //Implementação do Modo Pânico
+int erro(FILE *programa, FILE *output, char **S){ //Implementação do Modo Pânico
     while (!pertence(classe, S)){
-        printf("Modo pânico / ");
+        printf("Modo pânico %s/ ", classe);
         obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha);
-        if (char_lido == EOF)
-            break;
+        if (char_lido == EOF || !strcmp(classe, "SIMB_PONTO"))
+            return 1; //Chegou ao fim do arquivo
     }
+    if (char_lido == EOF || !strcmp(classe, "SIMB_PONTO"))
+        return 1; //Chegou ao fim do arquivo 
+    return 0;
 }
 
-int leitura_sintatica(FILE *programa, FILE *output, char *classe_goal, char *erro1, char *erro2, char *seg_loc[], char *seg_pai[]){ //Função para modularização do código de tratamento de erros sintáticos/léxicos
+int leitura_sintatica(FILE *programa, FILE *output, char *classe_goal, char *erro1, char *erro2, char *seg_loc[], char *seg_modo[]){ //Função para modularização do código de tratamento de erros sintáticos/léxicos
     printf("Objetivo: %s / Entra: %s / ", classe_goal, classe);
     if (pertence(classe, ERROS_LEXICOS)){ //Não misturar erros léxicos com sintáticos
         saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
@@ -130,7 +133,7 @@ int leitura_sintatica(FILE *programa, FILE *output, char *classe_goal, char *err
         snprintf(msg_ini, sizeof(msg_ini), "Erro sintático na linha %d: %s", cont_linha, erro1);
         saida_sintatico(output, msg_ini); //Escrevendo a msg de erro no arquivo de saída
 
-        erro(programa, output, uniao(seg_loc, seg_pai)); //Fazendo união do seguidor local com o seguidor do pai
+        erro(programa, output, uniao(seg_loc, seg_modo)); //Fazendo união do seguidor local com o seguidor do modo
         if (pertence(classe, SEGUIDOR_CONSTANTE)){ //Consumiu o procedimento inteiro
             if (strcmp(erro2, "void")){ //Garantindo que não vá printar erro repetido em casos de tokens finais do procedimento
                 snprintf(msg_ini, sizeof(msg_ini), "Erro sintático na linha %d: %s", cont_linha, erro2);
@@ -235,10 +238,11 @@ void Constante(FILE *programa, FILE *output){
                 saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
             } 
             else{ //ERRO - leu um símbolo estranho que não é a vírgula
-                snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: símbolo estranho no contexto (%s) ...", cont_linha, token_atual);
+                snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: símbolo estranho no contexto de Constante (%s) ...", cont_linha, token_atual);
                 saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
                 
-                erro(programa, output, SEGUIDOR_CONSTANTE); //Modo pânico consumindo o procedimento inteiro
+                if (erro(programa, output, SEGUIDOR_CONSTANTE)) //Modo pânico consumindo o procedimento inteiro
+                    return; //Chegou no fim do arquivo
                 printf("\nFinar: %s\n", classe);
                 if (char_lido != EOF){
                     snprintf(mensagem1, sizeof(mensagem1), "...Continuando a análise sintática na linha %d e no símbolo %s", cont_linha, token_atual);
@@ -281,10 +285,11 @@ void Variavel(FILE *programa, FILE *output){
                 saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
             } 
             else{ //ERRO - leu um símbolo estranho que não é a vírgula
-                snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: símbolo estranho no contexto (%s) ...", cont_linha, token_atual);
+                snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: símbolo estranho no contexto de Variável (%s) ...", cont_linha, token_atual);
                 saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
                 
-                erro(programa, output, SEGUIDOR_VARIAVEL); //Modo pânico consumindo o procedimento inteiro
+                if (erro(programa, output, SEGUIDOR_VARIAVEL)) //Modo pânico consumindo o procedimento inteiro
+                    return; //Chegou no fim do arquivo
                 printf("\nFinar: %s\n", classe);
                 if (char_lido != EOF){
                     snprintf(mensagem1, sizeof(mensagem1), "...Continuando a análise sintática na linha %d e no símbolo %s", cont_linha, token_atual);
@@ -332,25 +337,6 @@ void Procedimento(FILE *programa, FILE *output){
         if (leitura_sintatica(programa, output, "SIMB_PONT_VIRG", mensagem1, mensagem2, seguidor_local, SEGUIDOR_PROCEDIMENTO))
             return; //Modo pânico consumiu o procedimento inteiro
         printf("Procedimento Sucesso!\n");
-
-        /*if (!strcmp(classe, "TK_ID")){
-            saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
-            if (!strcmp(classe, "SIMB_PONT_VIRG")){
-                saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
-
-                //Chamando Bloco
-                Constante(programa, output);
-                Variavel(programa, output);
-                Procedimento(programa, output);
-                Comando(programa, output);
-
-                saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
-                if (!strcmp(classe, "SIMB_PONT_VIRG")){
-                    printf("Procedimento Sucesso!\n");
-                    saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
-                }
-            }
-        }*/
     }
 }
 
@@ -367,16 +353,9 @@ void Comando(FILE *programa, FILE *output){
             return; //Modo pânico consumiu o procedimento inteiro
         
         //Chamando Expressao
-        Expressao(programa, output);
+        Expressao(programa, output, 0);
 
         printf("Comando Sucesso! - Atribuição\n");
-
-        /*if (!strcmp(classe, "TK_ATRIBUICAO")){
-            saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
-            Expressao(programa, output);
-            printf("Comando Sucesso! - Atribuição\n");
-            saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
-        }*/
     }
     else if (!strcmp(classe, "CALL")){
         saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
@@ -389,16 +368,12 @@ void Comando(FILE *programa, FILE *output){
             return; //Modo pânico consumiu o procedimento inteiro
 
         printf("Comando Sucesso! - CALL Procedure\n");
-
-        /*if (!strcmp(classe, "TK_ID")){
-            printf("Comando Sucesso! - CALL Procedure\n");
-            saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
-        }*/
     }
     else if (!strcmp(classe, "BEGIN")){
         saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
         while (1){
             Comando(programa, output);
+            
             //Chegou aqui - último token lido foi um ponto e vírgula, um END ou um primeiro de comando
             if (!strcmp(classe, "END")){ // Sai do ciclo e encerra o procedimento
                 printf("Comando Sucesso! - BEGIN ... END\n");
@@ -413,10 +388,11 @@ void Comando(FILE *programa, FILE *output){
                 saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
             } 
             else{ //ERRO - leu um símbolo estranho ao contexto
-                snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: símbolo estranho no contexto (%s) ...", cont_linha, token_atual);
+                snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: símbolo estranho no contexto de Comando(%s) ...", cont_linha, token_atual);
                 saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
                 
-                erro(programa, output, SEGUIDOR_COMANDO); //Modo pânico consumindo o procedimento inteiro
+                if (erro(programa, output, SEGUIDOR_COMANDO)) //Modo pânico consumindo o procedimento inteiro
+                    return; //Chegou no fim do arquivo
                 printf("\nFinar: %s\n", classe);
                 if (char_lido != EOF){
                     snprintf(mensagem1, sizeof(mensagem1), "...Continuando a análise sintática na linha %d e no símbolo %s", cont_linha, token_atual);
@@ -441,12 +417,6 @@ void Comando(FILE *programa, FILE *output){
         Comando(programa, output);
 
         printf("Comando Sucesso! - IF\n");
-        /*if (!strcmp(classe, "THEN")){
-            saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
-            Comando(programa, output);
-            printf("Comando Sucesso! - IF\n");
-            saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
-        }*/
     }
     else if (!strcmp(classe, "WHILE")){
         saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
@@ -463,51 +433,42 @@ void Comando(FILE *programa, FILE *output){
         Comando(programa, output);
 
         printf("Comando Sucesso! - WHILE\n");
-        /*if (!strcmp(classe, "WHILE")){
-            saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
-            Condicao(programa, output);
-            saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
-            if (!strcmp(classe, "DO")){
-                saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
-                Comando(programa, output);
-                printf("Comando Sucesso! - WHILE\n");
-                saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
-            }
-        }*/
     }
 }
 
-void Expressao(FILE *programa, FILE *output){
+void Expressao(FILE *programa, FILE *output, int modo){ //modo indica o modo que será personalizado o tratamento de erros
     if (!strcmp(classe, "SIMB_SOMA") || !strcmp(classe, "SIMB_SUB")){
         saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
     }
     while (1){
         //Chamando Fator
-        if(Fator(programa, output)){ //Fator não foi declarado
+        if(Fator(programa, output, modo)){ //Fator não foi declarado
             snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: ausência da declaração de fator em expressão", cont_linha);
             saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
         }
         //Chamando Mais Fator
-        Mais_Fator(programa, output);
+        Mais_Fator(programa, output, modo);
 
-        printf("\nAOOOOOOOOOO: %s\n", classe);
-        //Chegou aqui - último token lido foi uma vírgula, um ponto e vírgula ou um identificador
-        if (pertence(classe, SEGUIDOR_EXPRESSAO)){ // Sai do ciclo e encerra o procedimento
+        //Tratando o ciclo
+        if (pertence(classe, SEGUIDOR_EXPRESSAO) || !strcmp(classe, "END")){ // Sai do ciclo e encerra o procedimento
             printf("Expressao Sucesso!\n");
             return;
         }
-        if(pertence(classe, PRIMEIRO_FATOR)){ //ERRO - leu algum primeiro de fator mesmo não tendo + ou - na separação
-            snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: ausência de '+' ou '-' separando os fatores", cont_linha);
+        if(pertence(classe, PRIMEIRO_FATOR)){ //ERRO - leu algum primeiro de fator mesmo não tendo nenhum operador na separação
+            if (modo)
+                return;
+            snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: ausência de um operador (+, -, *, /) separando os fatores", cont_linha);
             saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
         }
         else if (!strcmp(classe, "SIMB_SUB") || !strcmp(classe, "SIMB_SOMA")){ //Leu - ou +, continua com a análise de Expressão
             saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
         } 
         else{ //ERRO - leu um símbolo estranho ao contexto
-            snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: símbolo estranho no contexto (%s) ...", cont_linha, token_atual);
+            snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: símbolo estranho no contexto de Expressão(%s) ...", cont_linha, token_atual);
             saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
             
-            erro(programa, output, SEGUIDOR_EXPRESSAO); //Modo pânico consumindo o procedimento inteiro
+            if (erro(programa, output, SEGUIDOR_EXPRESSAO)) //Modo pânico consumindo o procedimento inteiro
+                return; //Chegou no fim do arquivo
             printf("\nFinar: %s\n", classe);
             if (char_lido != EOF){
                 snprintf(mensagem1, sizeof(mensagem1), "...Continuando a análise sintática na linha %d e no símbolo %s", cont_linha, token_atual);
@@ -515,22 +476,9 @@ void Expressao(FILE *programa, FILE *output){
             }
         }
     }
-    
-    /*if (!strcmp(classe, "SIMB_SOMA") || !strcmp(classe, "SIMB_SUB") || pertence(classe, PRIMEIRO_FATOR)){
-        while (1){
-            saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
-            Fator(programa, output);
-            saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
-            Mais_Fator(programa, output);
-            if (strcmp(classe, "SIMB_SOMA") || strcmp(classe, "SIMB_SUB")){ //Sem + ou -, encerasse o ciclo
-                break;
-            }
-        }
-        printf("Expressao Sucesso!\n");
-    }*/
 }
 
-int Fator(FILE *programa, FILE *output){
+int Fator(FILE *programa, FILE *output, int modo){
     char *seguidor_local[20];
     if (!strcmp(classe, "TK_ID")){
         printf("Fator Sucesso! - ident\n");
@@ -545,7 +493,7 @@ int Fator(FILE *programa, FILE *output){
     else if (!strcmp(classe, "TK_ABRE_P")){
         saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
         //Chamando Expressao
-        Expressao(programa, output);
+        Expressao(programa, output, modo);
         
         // Identificação ')'
         snprintf(mensagem1, sizeof(mensagem1), "esperava-se ')' para delimitar o fator");
@@ -561,30 +509,30 @@ int Fator(FILE *programa, FILE *output){
     return 1;
 }
 
-void Mais_Fator(FILE *programa, FILE *output){
+void Mais_Fator(FILE *programa, FILE *output, int modo){
     while (!strcmp(classe, "SIMB_MULTIPLIC") || !strcmp(classe, "SIMB_DIV")){
         saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
+        printf("\nOOOOOOOOOOOOOO\n");
         //Chamando Fator
-        Fator(programa, output);
+        Fator(programa, output, modo);
+        printf("\nAAAAAAAAAAAAAAAA\n");
 
         //Tratamento de * e /
         if (pertence(classe, SEGUIDOR_MAIS_FATORES)){ // Sai do ciclo e encerra o procedimento
             printf("Mais Fatores Sucesso!\n");
-            saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
+            //saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
             return;
         }
         if(pertence(classe, PRIMEIRO_FATOR)){ //ERRO - leu algum primeiro de fator mesmo não tendo * ou /
             snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: ausência de '*' ou '/' separando os fatores", cont_linha);
             saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
         }
-        else if (!strcmp(classe, "SIMB_MULTIPLIC") || !strcmp(classe, "SIMB_DIV")){ //Leu * ou /, continua com a análise de Mais Fatores
-            saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
-        } 
-        else{ //ERRO - leu um símbolo estranho ao contexto
-            snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: símbolo estranho no contexto (%s) ...", cont_linha, token_atual);
+        else if (strcmp(classe, "SIMB_MULTIPLIC") && strcmp(classe, "SIMB_DIV")){ //ERRO - leu um símbolo estranho ao contexto
+            snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: símbolo estranho no contexto de Mais Fatores (%s) ...", cont_linha, token_atual);
             saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
             
-            erro(programa, output, SEGUIDOR_MAIS_FATORES); //Modo pânico consumindo o procedimento inteiro
+            if (erro(programa, output, SEGUIDOR_MAIS_FATORES)) //Modo pânico consumindo o procedimento inteiro
+                return; //Chegou no fim do arquivo
             printf("\nFinar: %s\n", classe);
             if (char_lido != EOF){
                 snprintf(mensagem1, sizeof(mensagem1), "...Continuando a análise sintática na linha %d e no símbolo %s", cont_linha, token_atual);
@@ -592,41 +540,34 @@ void Mais_Fator(FILE *programa, FILE *output){
             }
         }
     }
-
-    /*while (!strcmp(classe, "SIMB_MULTIPLIC") || !strcmp(classe, "SIMB_DIV")){
-        saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
-        Fator(programa, output);
-        saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
-    }
-    printf("Mais Fator Sucesso!\n");
-    saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));*/
 }
 
 void Condicao(FILE *programa, FILE *output){
     if (!strcmp(classe, "ODD")){
         saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
         //Chamando Expressao
-        Expressao(programa, output);
+        Expressao(programa, output, 0);
     }
     else if (pertence(classe, PRIMEIRO_EXPRESSAO)){
         //Chamando Expressao
-        Expressao(programa, output);
+        Expressao(programa, output, 1);
 
         //Tratamento da possível ausência de relacional
         if (pertence(classe, PRIMEIRO_RELACIONAL)){ //Símbolo inserido corretamente
             saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
-            Expressao(programa, output);
+            Expressao(programa, output, 0);
         }
         else if (pertence(classe, PRIMEIRO_EXPRESSAO)){ //Esqueceu-se da colocação do operador relacional entre as expressões
             snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: ausência de um operador relacional separando as expressões", cont_linha);
             saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
-            Expressao(programa, output);
+            Expressao(programa, output, 0);
         }
         else{ //ERRO - leu um símbolo estranho ao contexto
-            snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: símbolo estranho no contexto (%s) ...", cont_linha, token_atual);
+            snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: símbolo estranho no contexto de Condição (%s) ...", cont_linha, token_atual);
             saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
             
-            erro(programa, output, SEGUIDOR_CONDICAO); //Modo pânico consumindo o procedimento inteiro
+            if (erro(programa, output, SEGUIDOR_CONDICAO)) //Modo pânico consumindo o procedimento inteiro
+                return; //Chegou no fim do arquivo
             printf("\nFinar: %s\n", classe);
             if (char_lido != EOF){
                 snprintf(mensagem1, sizeof(mensagem1), "...Continuando a análise sintática na linha %d e no símbolo %s", cont_linha, token_atual);

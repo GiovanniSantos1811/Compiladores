@@ -1,0 +1,2 @@
+Erro sintático na linha 3: ausência de um operador relacional separando as expressões
+Erro sintático na linha 4: ausência de um operador separando os fatores
