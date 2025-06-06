@@ -79,13 +79,18 @@ int leitura_arquivo_sintatico(const char *nome_arquivo){
         return -1;
     }
 
-    FILE *output = fopen(nome_output, "w");
+    FILE *output = fopen(nome_output, "w+");
     if (output == NULL) {
-        perror("Erro ao abrir o arquivo");
+        perror("Erro ao abrir o arquivo saída");
         return -1;
     }
 
     ASD(programa, output); //Fazendo a análise sintática descendente preditiva recursiva 
+
+    //Verificando se foi escrito algo no arquivo de saída - caso não tenha sido, compilação foi um sucesso
+    if (fgetc(output) == EOF){ //Não leu nada - compilação foi um sucesso
+        saida_sintatico(output, "Compilação foi um sucesso");
+    }
 
     fclose(output);
     fclose(programa);
