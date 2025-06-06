@@ -248,8 +248,10 @@ void Constante(FILE *programa, FILE *output){
                 saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
             } 
             else{ //ERRO - leu um símbolo estranho que não é a vírgula
-                snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: símbolo estranho no contexto de Constante (%s) ...", cont_linha, token_atual);
-                saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
+                if (!pertence(classe, ERROS_LEXICOS)){
+                    snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: símbolo estranho no contexto de Constante (%s) ...", cont_linha, token_atual);
+                    saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
+                }
                 
                 if (erro(programa, output, SEGUIDOR_CONSTANTE)) //Modo pânico consumindo o procedimento inteiro
                     return; //Chegou no fim do arquivo
@@ -295,9 +297,11 @@ void Variavel(FILE *programa, FILE *output){
                 saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
             } 
             else{ //ERRO - leu um símbolo estranho que não é a vírgula
-                snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: símbolo estranho no contexto de Variável (%s) ...", cont_linha, token_atual);
-                saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
-                
+                if (!pertence(classe, ERROS_LEXICOS)){
+                    snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: símbolo estranho no contexto de Variável (%s) ...", cont_linha, token_atual);
+                    saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
+                }
+
                 if (erro(programa, output, SEGUIDOR_VARIAVEL)) //Modo pânico consumindo o procedimento inteiro
                     return; //Chegou no fim do arquivo
                 printf("\nFinar: %s\n", classe);
@@ -398,9 +402,11 @@ void Comando(FILE *programa, FILE *output){
                 saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
             } 
             else{ //ERRO - leu um símbolo estranho ao contexto
-                snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: símbolo estranho no contexto de Comando(%s) ...", cont_linha, token_atual);
-                saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
-                
+                if (!pertence(classe, ERROS_LEXICOS)){
+                    snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: símbolo estranho no contexto de Comando(%s) ...", cont_linha, token_atual);
+                    saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
+                }
+
                 if (erro(programa, output, SEGUIDOR_COMANDO)) //Modo pânico consumindo o procedimento inteiro
                     return; //Chegou no fim do arquivo
                 printf("\nFinar: %s\n", classe);
@@ -493,9 +499,11 @@ void Expressao(FILE *programa, FILE *output, int modo){ //modo indica o modo que
             saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
         } 
         else{ //ERRO - leu um símbolo estranho ao contexto
-            snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: símbolo estranho no contexto de Expressão(%s) ...", cont_linha, token_atual);
-            saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
-            
+            if (!pertence(classe, ERROS_LEXICOS)){
+                snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: símbolo estranho no contexto de Expressão(%s) ...", cont_linha, token_atual);
+                saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
+            }
+
             if (erro(programa, output, SEGUIDOR_EXPRESSAO)) //Modo pânico consumindo o procedimento inteiro
                 return; //Chegou no fim do arquivo
             printf("\nFinar: %s\n", classe);
@@ -560,9 +568,11 @@ void Mais_Fator(FILE *programa, FILE *output, int modo){
             saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
         }
         else if (strcmp(classe, "SIMB_MULTIPLIC") && strcmp(classe, "SIMB_DIV")){ //ERRO - leu um símbolo estranho ao contexto
-            snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: símbolo estranho no contexto de Mais Fatores (%s) ...", cont_linha, token_atual);
-            saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
-            
+            if (!pertence(classe, ERROS_LEXICOS)){
+                snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: símbolo estranho no contexto de Mais Fatores (%s) ...", cont_linha, token_atual);
+                saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
+            }
+
             if (erro(programa, output, SEGUIDOR_MAIS_FATORES)) //Modo pânico consumindo o procedimento inteiro
                 return; //Chegou no fim do arquivo
             printf("\nFinar: %s\n", classe);
@@ -595,9 +605,10 @@ void Condicao(FILE *programa, FILE *output){
             Expressao(programa, output, 0);
         }
         else{ //ERRO - leu um símbolo estranho ao contexto
-            snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: símbolo estranho no contexto de Condição (%s) ...", cont_linha, token_atual);
-            saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
-            
+            if (!pertence(classe, ERROS_LEXICOS)){
+                snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: símbolo estranho no contexto de Condição (%s) ...", cont_linha, token_atual);
+                saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
+            }
             if (erro(programa, output, SEGUIDOR_CONDICAO)) //Modo pânico consumindo o procedimento inteiro
                 return; //Chegou no fim do arquivo
             printf("\nFinar: %s\n", classe);
