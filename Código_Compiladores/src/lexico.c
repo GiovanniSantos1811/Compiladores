@@ -336,7 +336,14 @@ int identifica_token(char *char_lido, FILE *programa, char **classe, char **toke
             //Como chegou em um estado final, a identificação desse token está completa
             strcpy(*token_atual, token); //Passando o token atual por referência
             //printf("Token: %s, Classe: %s\n", *token_atual, *classe);
-            break; //Parando a identificação
+
+            //Consumindo os comentários para não passar isso pro Sintático
+            if (strcmp(*classe, "COMENTARIO")){ //Diferente de comentário, então sai da identificação já
+                break; //Parando a identificação
+            }
+            estado_atual = 0;
+            cont = 0;
+            strcpy(*token_atual, "");
         }
     }
 
