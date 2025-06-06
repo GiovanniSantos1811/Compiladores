@@ -9,3 +9,5 @@ Erro sintático na linha 8: utilização de ';' como terminador de um comando
 Erro Léxico na linha 10: Comentário mal formado ({comentario com)
 Erro sintático na linha 10: símbolo estranho no contexto de Comando({comentario com) ...
 ...Continuando a análise sintática na linha 11 e no símbolo END
+Erro sintático na linha 15: sem '.' para finalizar o programa, recebeu-se (adgiknsb)
+Erro sintático na linha 16: continuação de entradas mesmo após a finalização da identificação de programa

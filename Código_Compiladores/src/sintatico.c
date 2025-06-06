@@ -176,17 +176,28 @@ void Programa(FILE *programa, FILE *output){
     Procedimento(programa, output);
     Comando(programa, output);
 
-    if(!strcmp(classe, "SIMB_PONTO")) {
-        
-        
-        printf("Finalizando o programa...\n");
-        return; 
-    }
-    else{  
+    if(strcmp(classe, "SIMB_PONTO")) {
         snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: sem '.' para finalizar o programa, recebeu-se (%s)", cont_linha, token_atual);
         saida_sintatico(output, mensagem1);
     }
-    saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha)); //Consumindo o EOF
+    //Tratamento de erros cometidos após a utilização do '.'
+    printf("\nCLASSE 1: %s, mensagem: %s\n", classe, mensagem1);
+    obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha);
+    printf("\nCLASSE 2: %s\n", classe);
+    if (!strcmp(classe, "ERRO_COMENT_MAL_FORMADO")){
+        snprintf(mensagem1, sizeof(mensagem1), "Erro Léxico na linha %d: Comentário mal formado (%s)", cont_linha, token_atual);
+        saida_sintatico(output, mensagem1);
+    }
+    else if (char_lido != EOF){ //Leu mais alguma coisa depois do '.'
+        snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: continuação de entradas mesmo após a finalização da identificação de programa", cont_linha);
+        saida_sintatico(output, mensagem1);
+    }
+    else{
+        return;
+    }
+    while (char_lido != EOF){
+        obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha);
+    }
 }
 
 void Constante(FILE *programa, FILE *output){

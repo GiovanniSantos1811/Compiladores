@@ -12,4 +12,5 @@ END;
 BEGIN
     n:=4;
     CALL fatorial
-END. {comentario!}
+END adgiknsb
+sfb in c 
