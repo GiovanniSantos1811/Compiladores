@@ -34,7 +34,7 @@ char *SEGUIDOR_MAIS_VAR[2] = {"SIMB_PONT_VIRG", ""};
 char *SEGUIDOR_PROCEDIMENTO[8] = {"TK_ID", "CALL", "BEGIN", "IF", "WHILE", "SIMB_PONTO", "SIMB_PONT_VIRG", ""};
 char *SEGUIDOR_COMANDO[4] = {"SIMB_PONTO", "SIMB_PONT_VIRG", "END", ""};
 char *SEGUIDOR_MAIS_CMD[2] = {"END", ""};
-char *SEGUIDOR_EXPRESSAO[12] = {"SIMB_PONTO", "SIMB_PONT_VIRG", "SIMB_FECHA_P", "THEN", "DO", "TK_ATRIBUICAO", "SIMB_MENOR_MAIOR", "SIMB_MENOR", "SIMB_MENOR_IGUAL", "SIMB_MAIOR", "SIMB_MAIOR_IGUAL", ""};
+char *SEGUIDOR_EXPRESSAO[13] = {"SIMB_PONTO", "SIMB_PONT_VIRG", "SIMB_FECHA_P", "THEN", "DO", "TK_ATRIBUICAO", "SIMB_MENOR_MAIOR", "SIMB_MENOR", "SIMB_MENOR_IGUAL", "SIMB_MAIOR", "SIMB_MAIOR_IGUAL", "END", ""};
 char *SEGUIDOR_OPERADOR_UNARIO[4] = {"TK_ID", "TK_NUM_INT", "SIMB_ABRE_P", ""};
 char *SEGUIDOR_TERMO[14] = {"SIMB_SUB", "SIMB_SOMA", "SIMB_PONTO", "SIMB_PONT_VIRG", "SIMB_FECHA_P", "THEN", "DO", "SIMB_IGUAL_IGUAL", "SIMB_MENOR_MAIOR", "SIMB_MENOR", "SIMB_MENOR_IGUAL", "SIMB_MAIOR", "SIMB_MAIOR_IGUAL", ""};
 char *SEGUIDOR_MAIS_TERMOS[12] = {"SIMB_PONTO", "SIMB_PONT_VIRG", "SIMB_FECHA_P", "THEN", "DO", "SIMB_IGUAL_IGUAL", "SIMB_MENOR_MAIOR", "SIMB_MENOR", "SIMB_MENOR_IGUAL", "SIMB_MAIOR", "SIMB_MAIOR_IGUAL", ""};
@@ -176,9 +176,8 @@ void Programa(FILE *programa, FILE *output){
     Procedimento(programa, output);
     Comando(programa, output);
 
-    if(!strcmp(classe, "SIMB_PONTO")) { // Tudo certo, finaliza o programa
-        // Precisamos tratar dos erros que ocorrem se eu colocar . finalizando o programa
-        //mas continuar escrevendo alguma coisa 
+    if(!strcmp(classe, "SIMB_PONTO")) {
+        
         
         printf("Finalizando o programa...\n");
         return; 
@@ -450,14 +449,33 @@ void Expressao(FILE *programa, FILE *output, int modo){ //modo indica o modo que
         Mais_Fator(programa, output, modo);
 
         //Tratando o ciclo
-        if (pertence(classe, SEGUIDOR_EXPRESSAO) || !strcmp(classe, "END")){ // Sai do ciclo e encerra o procedimento
+        if (pertence(classe, SEGUIDOR_EXPRESSAO)){ // Sai do ciclo e encerra o procedimento
+            //Identificando possível incongruência de ; como terminador de comando
+            if (!strcmp(classe, "SIMB_PONT_VIRG")){
+                long pos_arquivo_atual = ftell(programa);
+                int cont_linha_atual = cont_linha;
+                char char_lido_atual = char_lido;
+
+                obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha);
+                if (!strcmp(classe, "END")){
+                    snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: utilização de ';' como terminador de um comando", cont_linha_atual);
+                    saida_sintatico(output, mensagem1);
+                }
+
+                fseek(programa, pos_arquivo_atual, SEEK_SET); //Voltando para a posição de leitura anterior
+                strcpy(classe, "SIMB_PONT_VIRG"); //Voltando para a classe de ;
+                strcpy(token_atual, ";"); //Voltando para o token de ;
+                char_lido = char_lido_atual;
+                cont_linha = cont_linha_atual;
+            }
+            
             printf("Expressao Sucesso!\n");
             return;
         }
         if(pertence(classe, PRIMEIRO_FATOR)){ //ERRO - leu algum primeiro de fator mesmo não tendo nenhum operador na separação
             if (modo)
                 return;
-            snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: ausência de um operador (+, -, *, /*) separando os fatores", cont_linha);
+            snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: ausência de um operador (+, -, *, /) separando os fatores", cont_linha);
             saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
         }
         else if (!strcmp(classe, "SIMB_SUB") || !strcmp(classe, "SIMB_SOMA")){ //Leu - ou +, continua com a análise de Expressão
@@ -504,6 +522,9 @@ int Fator(FILE *programa, FILE *output, int modo){
 
         printf("Fator Sucesso! - parenteses\n");
 
+        return 0;
+    }
+    else if (pertence(classe, ERROS_LEXICOS) || pertence(classe, SEGUIDOR_EXPRESSAO)){
         return 0;
     }
     return 1;
