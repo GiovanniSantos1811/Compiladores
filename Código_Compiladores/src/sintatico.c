@@ -457,7 +457,7 @@ void Expressao(FILE *programa, FILE *output, int modo){ //modo indica o modo que
         if(pertence(classe, PRIMEIRO_FATOR)){ //ERRO - leu algum primeiro de fator mesmo não tendo nenhum operador na separação
             if (modo)
                 return;
-            snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: ausência de um operador (+, -, *, /) separando os fatores", cont_linha);
+            snprintf(mensagem1, sizeof(mensagem1), "Erro sintático na linha %d: ausência de um operador (+, -, *, /*) separando os fatores", cont_linha);
             saida_sintatico(output, mensagem1); //Escrevendo a msg de erro no arquivo de saída
         }
         else if (!strcmp(classe, "SIMB_SUB") || !strcmp(classe, "SIMB_SOMA")){ //Leu - ou +, continua com a análise de Expressão
