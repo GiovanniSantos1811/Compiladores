@@ -31,7 +31,6 @@ int main() {
             printf("Digite uma das opçõs descritas!\n");
         }
         }
-        
     }
     printf("\nProcesso de compilação parcial concluída! Resultado está em output.txt\n");
     
