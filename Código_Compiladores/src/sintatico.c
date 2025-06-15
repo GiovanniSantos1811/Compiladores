@@ -201,7 +201,8 @@ void Programa(FILE *programa, FILE *output){
 }
 
 void Constante(FILE *programa, FILE *output){
-    char *seguidor_local[10];
+    char *seguidor_local[10], aux;
+    strcmp(aux, classe);
     if (!strcmp(classe, "CONST")){
         saida_sintatico(output, obtem_token_e_erro(&char_lido, programa, &classe, &token_atual, &cont_linha));
         while (1){
@@ -213,8 +214,9 @@ void Constante(FILE *programa, FILE *output){
             seguidor_local[0] = "SIMB_IGUAL_IGUAL";
             seguidor_local[1] = "";
             //Fazendo a identificação e verificando erros - aplicando modo pânico caso necessário
-            if (leitura_sintatica(programa, output, "TK_ID", mensagem1, mensagem2, seguidor_local, SEGUIDOR_CONSTANTE))
+            if (leitura_sintatica(programa, output, "TK_ID", mensagem1, mensagem2, seguidor_local, SEGUIDOR_CONSTANTE)){
                 return; //Modo pânico consumiu o procedimento inteiro
+            }
 
             // Identificação '='
             snprintf(mensagem1, sizeof(mensagem1), "símbolo '=' esperado entre a constante e o número");

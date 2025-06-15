@@ -1,4 +1,1 @@
-Erro sintático na linha 1: símbolo de := esperado
-Erro sintático na linha 1: esperava-se '-', '+', ident, número ou '('
-Erro sintático na linha 1: sem '.' para finalizar o programa, recebeu-se (y)
-Erro sintático na linha 1: continuação de entradas mesmo após a finalização da identificação de programa
+Erro sintático na linha 1: sem '.' para finalizar o programa, recebeu-se (;)
